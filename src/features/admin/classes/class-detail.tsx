@@ -73,8 +73,9 @@ export function ClassDetail({ id }: { id: string }) {
     retry: false,
   });
 
-  const roster = query.data?.students ?? [];
+  const roster = query.data?.students;
   const filtered = useMemo(() => {
+    if (!roster) return [];
     const q = studentSearch.trim().toLowerCase();
     return roster.filter((student) => {
       const matchesQuery =

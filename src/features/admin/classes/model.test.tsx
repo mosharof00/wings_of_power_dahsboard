@@ -5,9 +5,12 @@ import { ClassTabs } from "./class-tabs";
 import {
   AGE_GROUPS,
   CLASS_SUBTITLE,
+  changeTeacherPayload,
   classListQuery,
   classReadyLine,
+  classStatusVariant,
   createClassPayload,
+  createClassSchema,
   requestBanner,
   teacherChoices,
 } from "./model";
@@ -49,6 +52,41 @@ describe("class payloads", () => {
       ageGroup: "6-9",
       teacherId: "teacher-1",
     });
+  });
+
+  it("builds change-teacher payload", () => {
+    expect(changeTeacherPayload("teacher-99")).toEqual({ teacherId: "teacher-99" });
+  });
+
+  it("validates createClassSchema correctly", () => {
+    const valid = createClassSchema.safeParse({
+      name: "Grade 3 · Maple",
+      grade: "Grade 3",
+      ageGroup: "6-9",
+      teacherId: "teacher-1",
+    });
+    expect(valid.success).toBe(true);
+
+    const invalidAge = createClassSchema.safeParse({
+      name: "Grade 3 · Maple",
+      grade: "Grade 3",
+      ageGroup: "invalid-group",
+      teacherId: "teacher-1",
+    });
+    expect(invalidAge.success).toBe(false);
+
+    const missingName = createClassSchema.safeParse({
+      name: "   ",
+      grade: "Grade 3",
+      ageGroup: "6-9",
+      teacherId: "teacher-1",
+    });
+    expect(missingName.success).toBe(false);
+  });
+
+  it("maps class status to variant", () => {
+    expect(classStatusVariant("ACTIVE")).toBe("active");
+    expect(classStatusVariant("INACTIVE")).toBe("inactive");
   });
 
   it("offers active teachers only", () => {

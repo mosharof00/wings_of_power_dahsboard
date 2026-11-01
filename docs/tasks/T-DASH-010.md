@@ -1,6 +1,6 @@
 # T-DASH-010 — Classes
 
-**Status:** Not started
+**Status:** Done
 
 ## Depends on
 
@@ -59,4 +59,8 @@ Document list fields in `docs/API.md` first.
 
 ## Notes
 
--
+- Age band choice 6–9, 10–13, adults in create form; table prints API ageGroup as received (D33, OPEN_QUESTIONS Dashboard #2).
+- Class details header and card render single GET /api/admin/classes/:id payload (D33, OPEN_QUESTIONS Dashboard #3).
+- Expired class code renewal generates new code for same requested class (D33, OPEN_QUESTIONS Dashboard #4).
+- Search query searches class name, grade, code, teacher; placeholder "Search by class or play mode" (D33).
+- Page subtitle: "Manage classes, join codes, and teacher assignment." (D33).
