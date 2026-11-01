@@ -1,6 +1,6 @@
 # T-DASH-009 — Students
 
-**Status:** Not started
+**Status:** Done
 
 ## Depends on
 
@@ -49,4 +49,10 @@ Teacher roster (T-DASH-016). Cloning the misfiled teacher-folder copies of these
 
 ## Notes
 
--
+- Checked every PNG in `design/screens/admin/user_management/`. List columns match `Student List.png`. The row menu matches `Student List-1.png`: View Profile always, Review on pending, Reactivate on inactive. Tabs are the ones exported by T-DASH-008. The PNG tab counts are not on the API, so they are not hardcoded.
+- `docs/API.md` now lists the student query, list fields, and the five profile tabs. `ageLabel` is the Details age because the screen shows it (D18). Safe Space is counts only. Review is `POST /api/admin/students/:id/approve` with no body (D1). Reactivate is `PATCH` `{ status: "ACTIVE" }`. Move class posts `{ classId }`. The All classes options are `classOptions` on the list. The move dialog uses `classOptions` on the detail.
+- The detail frames repeat the staff breadcrumb “User Management / Staff / …”. This page uses “User Management / Students / {name}”. The inactive frame’s button says “Reactive”; the control is Reactivate, matching the row menu and the task.
+- The shell title stays “Dashboard” on these routes. User Management’s nav href is `/admin/users/staff`, and `nav.ts` is outside this task.
+- Browser, as an admin: page 2 shows “Showing 13–13 of 13”. Grade 6 filters to “Showing 1–5 of 5”. `?q=jonah` shows one row. Jonah’s profile opens Details, Progress, Points & Badges, Game Show Eligibility, and Safe Space. Moving him to Grade 6 · Ruby updates that class on the list. Reactivating Carlos Ramirez makes the list row Active. Approving Liam OConnor from Pending Approvals drops that tab from 3 rows to 2, and the student list shows him Active.
+- Lint, typecheck, 61 tests, and build passed.
+

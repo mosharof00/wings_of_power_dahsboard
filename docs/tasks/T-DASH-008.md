@@ -1,6 +1,6 @@
 # T-DASH-008 — Teachers and staff
 
-**Status:** Not started
+**Status:** Done
 
 ## Depends on
 
@@ -51,4 +51,11 @@ Document list fields the columns need, in API.md, before coding.
 
 ## Notes
 
--
+- Checked `Staff list.png`, `Action Button.png`, `Invitaion.png`, `View profile.png`, `View profile-1.png`, `Edit Staff.png`, `Reactivate.png`, and `Toast.png`.
+- D32: a TEACHER with `canAccessSafeSpace` displays as Counselor; a TEACHER without it displays as Teacher. ADMIN displays as Admin. The API role stays TEACHER or ADMIN.
+- Inactive uses the destructive badge. The green Inactive on `Staff list.png` is not copied.
+- Invite dialog shows Full Name and Assigned Class. The POST body is only `email` and `canAccessSafeSpace`. The class select has no options because this task has no class list endpoint. Success toast title is “Invitation Sent”.
+- Edit is a dialog on the profile. PATCH sends name, email, `canAccessSafeSpace`, and `assignedClass`.
+- Browser, as an admin: page 2 shows “Showing 13–13 of 13”. An empty invite stays open with “Work email is required”. A valid invite shows “Invitation Sent” / “Invitation sent to Nora Chen” and the list total increases. Editing Teacher 1 saves the heading “Amina Teacher”. Reactivate on Liam OConnor shows “Are You Sure?” and the profile becomes Active. Send Reminder on Carlos Ramirez shows “Reminder sent” / “The invite was sent again to Carlos Ramirez.” `?q=carlos` shows that one row.
+- Lint, typecheck, 49 tests, and build passed.
+

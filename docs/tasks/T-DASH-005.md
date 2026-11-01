@@ -1,6 +1,6 @@
 # T-DASH-005 — Forms, dialogs, toasts, badges, and states
 
-**Status:** Not started
+**Status:** Done
 
 ## Depends on
 
@@ -49,4 +49,8 @@ None.
 
 ## Notes
 
--
+- Shared pieces: `Form` (react-hook-form + `zodResolver`), `DialogActions` (Cancel outline on the left, primary submit on the right), `toastSuccess`, `StatusBadge`, `EmptyState`, `ErrorState`, `LoadingState`, and `TableRowSkeleton`. The toaster is mounted bottom-right in the root layout, with an orange check on success toasts.
+- `applyApiFormError` takes `{ message?, fields? }`. `fields` is a map of field name to a string or string list. API.md only calls 400 “validation”, so this is the shape feature tasks pass in. A top-level `message` is set on `root`.
+- The shadcn registry did not emit a Form file for this style, so `src/components/ui/form.tsx` follows that Form API. The data table was not edited; it can take `EmptyState` through its `empty` prop and can reuse `TableRowSkeleton`.
+- Tests lock the ten badge labels, a required “Name is required” zod message on the form, and a callable `toastSuccess`. Lint, typecheck, test (20), and build passed.
+

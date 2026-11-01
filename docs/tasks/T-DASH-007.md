@@ -1,6 +1,6 @@
 # T-DASH-007 — Admin dashboard
 
-**Status:** Not started
+**Status:** Done
 
 ## Depends on
 
@@ -47,4 +47,9 @@ Admin Analytics page, Settings page, inventing a gender field if the contract wo
 
 ## Notes
 
--
+- Checked `design/screens/admin/dashboard/Dashboard.png`. `GET /api/admin/dashboard` now lists the home fields in `docs/API.md`.
+- Greeting uses the signed-in name. The attention line uses `attentionCount`. The chart is Monday–Friday reading and listening hours. Manage Stories goes to `/admin/stories`. Review goes to `/admin/classes/requests`, `/admin/users/pending`, and `/admin/safe-space`.
+- Student records do not store gender (DATABASE collected fields, D18), so the contract has optional `students.segments` and does not add Boys/Girls. With no segments, the donut shows the total and no percent labels. The PNG’s 74 and 55 are not hardcoded.
+- The PNG’s Grade dropdown and Recent Activity “View All” have no field or route in this contract, so they are not on the page.
+- Browser, as an admin: four KPI cards (248, 18, 12, 04), Mon–Fri chart, and the three Review links open those routes (the destination pages are still 404 until their tasks). A forced 500 shows “Dashboard unavailable” and Try again, and stays on `/admin`.
+- Lint, typecheck, 41 tests, and build passed. Recharts was added for the week chart.

@@ -1,6 +1,6 @@
 # T-DASH-006 — Sign in and sign up
 
-**Status:** Not started
+**Status:** Done
 
 ## Depends on
 
@@ -60,4 +60,9 @@ Auth module in `docs/API.md`: admin register, verify-email, staff login, forgot-
 
 ## Notes
 
--
+- Checked `Dashboard.png` (hero and sign-in), `Dashboard-1.png` (sign-up), `Dashboard-2.png` (sign-in), `Dashboard-3.png` and `Dashboard-7.png` (one code screen), `Dashboard-4.png` (forgot password), `Dashboard-5.png` and `Dashboard-6.png` (school profile and “You’re All Set”), and `Dashboard-8.png` (set password). `Dashboard-9.png` is the same empty code screen as `Dashboard-7.png`, so it has no second route. `Sign Up.png` is the junk crop (the words “Sign Up” on black) and no route uses it.
+- Hero is the left illustration only, saved at `public/auth/hero.png`. The device bezel is omitted. The caption is already in that image.
+- `GET /api/auth/me` does not include a school. Logged under Dashboard #1 in `docs/OPEN_QUESTIONS.md`, then D30. A newly registered admin goes through `/onboarding/school` once (`sessionStorage` `wop.pendingSchool`, cleared when the profile is saved). If `me` includes a school, skip it. School POST body is `{ name }`.
+- “Resend Again” stays on the code screen and does not post. `docs/API.md` has no resend route. Confirm password is client-only. Reset and invite tokens come from the query string.
+- Browser: empty sign-up shows Full name, Work email, Password, and Confirm password required, and stays on `/sign-up`. A bad password shows “Password not matched” and stays on `/sign-in`. Admin login lands on `/admin`; teacher login lands on `/teacher`. Accept-invite posted `{ token, name, password }`.
+- Lint, typecheck, 32 tests, and build passed. The Next.js middleware deprecation warning is unchanged.

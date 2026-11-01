@@ -1,6 +1,6 @@
 # T-DASH-004 — Data table
 
-**Status:** Not started
+**Status:** Done
 
 ## Depends on
 
@@ -47,4 +47,7 @@ Consumes the list shape `{ items, total, page, perPage, lastPage }` from `docs/A
 
 ## Notes
 
--
+- `DataTable` lives in `src/components/data-table/`. No feature route imports it. T-DASH-005 has not exported an empty state, so an empty body is the muted line “Nothing to show.” unless the parent passes `empty`.
+- Search is controlled by the parent. The field debounces `onSearchChange` by 300ms. Filters render to the right of the search row. `rowAction` adds the action cell. Pagination is server-side: the footer uses `page`, `perPage`, `total`, and `lastPage`.
+- Tests cover the 300ms debounce, “Showing 1–12 of 80”, “1 / 7”, and next moving from page 1 to page 2. The rendered footer includes those two strings. Lint, typecheck, test (17), and build passed.
+

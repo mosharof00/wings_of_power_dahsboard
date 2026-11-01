@@ -1,6 +1,6 @@
 # T-DASH-002 — Tokens and layout shell
 
-**Status:** Not started
+**Status:** Done
 
 ## Depends on
 
@@ -55,4 +55,11 @@ None.
 
 ## Notes
 
--
+- Inter is decision **D24**. The root layout loads that family only.
+- Sampled tokens are in `globals.css`. Light and dark share them, so the espresso rail stays `#150901`.
+- The rail wordmark is text. No logo file was added.
+- “Sarah”, the initial S, and the bell count 3 are static chrome from the dashboard PNG until T-DASH-003. The bell has no menu. Logout does not call the API.
+- `?as=teacher` or `/teacher` switches the rail. T-DASH-003 should remove the query switch if the session replaces it.
+- Search is a GET form to `/admin/users/students?q=` or `/teacher/students?q=`. Those pages 404 until their tasks.
+- Checked in the browser at 1440×900: `/admin` has the active pill on dashboard, “Storie”, and Analytics and Settings with no href. `/teacher` has Profile and Settings, and Stories & Questions with no href. Admin search landed on `/admin/users/students?q=maya`. Teacher search landed on `/teacher/students?q=isla`.
+- Lint, typecheck, test (5), and build passed.

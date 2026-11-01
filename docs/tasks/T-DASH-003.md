@@ -1,6 +1,6 @@
 # T-DASH-003 — API client and auth session
 
-**Status:** Not started
+**Status:** Done
 
 ## Depends on
 
@@ -60,4 +60,10 @@ None. Guard behavior is specified in the plan.
 
 ## Notes
 
--
+- Session storage is decision **D25**. Key `wop.accessToken`. `writeAccessToken(token, remember)` is ready for the T-DASH-006 checkbox. No refresh token.
+- `../docs/openapi.json` was not present, and `WINGS_OPENAPI_PATH` was unset. `npm run openapi:generate` exits with a message that names `WINGS_OPENAPI_PATH`, `../docs/openapi.json`, and `${NEXT_PUBLIC_API_URL}/docs-json`. `src/lib/api/schema.ts` types the staff auth paths from API.md section 1 until that script replaces it. It is not a hand-written OpenAPI document.
+- The `?as=` rail switch is gone. The shell follows the path after the role guard. The top bar shows the name from `GET /api/auth/me`.
+- Next.js 16 prints a deprecation warning for `middleware.ts` and still runs it. `/` redirects to `/sign-in`.
+- Checked in the browser: no token on `/admin` goes to `/sign-in`. An admin token renders the admin shell. A teacher opening `/admin` lands on `/teacher`. An admin opening `/teacher` lands on `/admin`. `/admin?as=teacher` stays on the admin rail.
+- Lint, typecheck, test (13), and build passed.
+
