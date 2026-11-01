@@ -1,6 +1,6 @@
 # T-DASH-011 — Stories and books upload
 
-**Status:** Not started
+**Status:** Done
 
 ## Depends on
 
@@ -48,4 +48,10 @@ Content and upload rows in `docs/API.md` sections 2 and 10. Add `DELETE /api/adm
 
 ## Notes
 
--
+- Documented `DELETE /api/admin/stories/:id` and story list fields in `docs/API.md`.
+- Implemented `/admin/stories` library with cover, title, author, chapter count, age group, status badge, updated date, and actions (publish, edit, delete).
+- Added search and filters for age group (All, 6-9, 10-13, Adults) and status (All, Published, Draft).
+- Kindness Corner tab visible and disabled (owned by T-DASH-021).
+- Implemented `/admin/stories/new` and `/admin/stories/[id]` multi-step editor: Details and Curriculum (chapters, pages with body text & image upload, chapter audio upload).
+- File uploads wired to `POST /api/uploads` with `STORY_COVER`, `PAGE_IMAGE`, `CHAPTER_AUDIO`.
+- Soft-delete removes stories from active list; teacher role redirects to `/teacher` via `DashboardGuard`.
