@@ -1,6 +1,6 @@
 # T-DASH-015 — Teacher dashboard
 
-**Status:** Not started
+**Status:** Done
 
 ## Depends on
 
@@ -48,4 +48,16 @@ Building the destination pages (those are 016, 019, 020). Character podium art. 
 
 ## Notes
 
--
+- Documented `GET /api/teacher/dashboard` response fields in `docs/API.md` section 9.
+- Built teacher dashboard components in `src/features/teacher/dashboard/`:
+  - `model.ts`: types, normalization, Mon–Fri week ordering, and greeting/attention helpers.
+  - `api.ts`: API clients for `GET /api/teacher/dashboard` and `GET /api/teacher/classes`.
+  - `metric-cards.tsx`: Safe Reports (links to `/teacher/safe-space`), Flagged Responses (count 0 with "Criteria not configured" caption), Pending Student (links to `/teacher/classes`), Game Eligible Students (informational).
+  - `charts.tsx`: Recharts Mon–Fri Quiz Average activity bar chart and Class Progress donut chart.
+  - `leaderboard.tsx`: Kindness leaderboard with class switcher dropdown; per Decision 5, displays student avatars, nicknames, and kindness points rather than hero character artwork.
+  - `reports-table.tsx`: Reports & approvals table with status badges and view links to `/teacher/safe-space`.
+  - `recent-awards.tsx`: Recent awards list with Quick Action "Award points" button linking to `/teacher/points`.
+  - `teacher-dashboard.tsx`: Main dashboard view wiring queries, class switcher refetch, loading, empty, and error states, and teacher role check.
+- Wired `/teacher` route in `src/app/(dashboard)/teacher/page.tsx`.
+- Added unit and component tests in `src/features/teacher/dashboard/model.test.tsx`.
+- Validations pass: `npm run lint`, `npm run typecheck`, `npm test` (19 files, 143 tests), and `npm run build`.

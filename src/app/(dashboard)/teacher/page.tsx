@@ -1,3 +1,5 @@
+import { TeacherDashboard } from "@/features/teacher/dashboard/teacher-dashboard";
+
 export default function TeacherHomePage() {
-  return null;
+  return <TeacherDashboard />;
 }
