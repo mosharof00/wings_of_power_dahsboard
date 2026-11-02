@@ -1,6 +1,6 @@
 # T-DASH-013 — Admin Safe Space reports
 
-**Status:** Not started
+**Status:** Complete
 
 ## Depends on
 
@@ -46,4 +46,9 @@ Admin Safe Space rows in `docs/API.md` section 7.
 
 ## Notes
 
--
+- Documented `GET /api/admin/safe-space/reports`, `GET /api/admin/safe-space/reports/:id`, `PATCH /api/admin/safe-space/reports/:id`, and `POST /api/admin/safe-space/reports/:id/notes` fields in `docs/API.md`.
+- Implemented `/admin/safe-space` list page with 4 summary metric cards (New, Reviewing, Addressed, Flagged) and Concern Categories breakdown card.
+- Implemented status tabs ("All", "New", "Reviewing", "Addressed"), search input, category / class / date filter dropdowns, and TanStack Table with Reference, Student, Class, Concern Category, Feel Safe pill, Submitted, Status badge, and View action button.
+- Implemented `/admin/safe-space/[id]` detail page with student summary, feel-safe indicator (feel safe vs does not feel safe banner), narrative body, staff notes feed, add note form, teacher assignment dropdown/button, change teacher dialog with current teacher tag, and change status workflow (New -> Reviewing -> Addressed).
+- Added comprehensive unit and component tests verifying status mapping, formatting, summary calculations, form validation schemas, UI rendering, and role authorization redirecting teacher tokens to `/teacher`.
+- Validation checks passed: lint (0 warnings/errors), typecheck, vitest (112/112 tests), and Next.js build.
