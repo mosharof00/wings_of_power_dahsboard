@@ -1,6 +1,6 @@
 # T-DASH-012 — Admin points and badges
 
-**Status:** Not started
+**Status:** Done
 
 ## Depends on
 
@@ -45,4 +45,9 @@ Teacher award UI (T-DASH-020). New badge names. Thresholds that are not on the s
 
 ## Notes
 
--
+- /admin/points screen wired with summary cards, point rules, six badges, points history table with pagination and filters.
+- Point rules default to Story=1, Kindness=50, TeacherAward=5 per D8.
+- Six badges match D10 and screenshot names/thresholds.
+- LocalStorage fallback when backend API not available.
+- API contract verified in docs/API.md.
+
