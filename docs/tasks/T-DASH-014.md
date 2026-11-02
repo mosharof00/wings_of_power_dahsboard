@@ -1,6 +1,6 @@
 # T-DASH-014 — Game-show activity and match details
 
-**Status:** Not started
+**Status:** Done
 
 ## Depends on
 
@@ -44,4 +44,17 @@ Live match control, matchmaking changes, teacher team balancing (decision 7: the
 
 ## Notes
 
--
+- Documented `GET/PATCH /api/admin/game/eligibility-config`, `GET /api/admin/game/matches`, and `GET /api/admin/game/matches/:id` in `docs/API.md`.
+- Implemented `/admin/game-show` page (`GameShowList`):
+  * Eligibility config cards showing Required Stories (2), Required Chapters (6), Minimum Comprehension % (70%).
+  * Edit Rule dialog calling `PATCH /api/admin/game/eligibility-config` with local persistence.
+  * Match history table with mode filter tabs (All, Single Player / 1v1, Multi Player / 5v5), phase filter, search input, date, class, play mode, player matchups with VS chip, winning score, winner badge, and view action.
+  * Handles loading, empty, and error states with retry.
+- Implemented `/admin/game-show/[id]` page (`GameMatchDetailView`):
+  * Match overview: mode, class, status, duration, date.
+  * Final match score scoreboard with team scores, VS badge, and winner indicator.
+  * Team and participant roster breakdown for 1v1 and 5v5 modes (displaying avatars, nicknames, usernames, hero powers, individual score XP, kindness points, and shots made/missed).
+  * Close / back navigation returning to `/admin/game-show`.
+- Enforced non-admin redirection to `/teacher`.
+- Added 19 unit/model tests in `src/features/admin/game-show/model.test.tsx` (all 131 project tests pass).
+- Verified validation: `yarn lint`, `yarn typecheck`, `yarn test`, and `yarn build` all pass cleanly.
