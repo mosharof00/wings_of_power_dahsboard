@@ -1,6 +1,6 @@
 # T-DASH-020 — Teacher points and badges
 
-**Status:** Not started
+**Status:** done
 
 ## Depends on
 
@@ -47,4 +47,11 @@ Editing global point rules (T-DASH-012). New categories beyond the crop. Badge t
 
 ## Notes
 
--
+- Implemented `/teacher/points` page with 3 tabs: Award Points, Badge Monitor, and History.
+- Skipped chrome slices as specified: `Container.png`, `Container-1.png`, `Container-2.png`, `Frame 1457.png`, `Frame 1457-1.png`, `Frame 1457-2.png` (as well as duplicate header/sidebar exports `teacher_points_overview.png`, `teacher_points_award_form.png`, `teacher_points_award_modal.png`, `teacher_points_award_confirm.png`, `teacher_points_student_list.png`, and `teacher_badges_overview.png`).
+- Documented `POST /api/teacher/points/award`, `GET /api/teacher/points/history`, and `GET /api/teacher/badges/monitor` in `docs/API.md`.
+- Form validation ensures awarded points are bounded strictly within 1..5.
+- Class switcher integrated across all three tabs.
+- Auto-refresh invalidates cache on points award.
+- Unit and model tests cover schemas, validation, data normalization, and static markup rendering.
+- All checks pass: lint (0 errors, 0 warnings), typecheck, vitest (26 test files, 234 tests), next build.
