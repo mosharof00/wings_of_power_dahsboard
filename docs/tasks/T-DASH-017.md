@@ -1,6 +1,6 @@
 # T-DASH-017 — Chapter quiz upload and edit
 
-**Status:** Not started
+**Status:** Done
 
 ## Depends on
 
@@ -55,4 +55,9 @@ No exported frame. Use the dashboard shell, the shared form, and the shared empt
 
 ## Notes
 
--
+- Updated `docs/API.md`: added `GET /api/teacher/stories` contract and extended `PUT /api/teacher/chapters/:chapterId/quiz` payload description.
+- Built Teacher chapter quiz picker at `/teacher/chapters` with story cards, chapter lists, search filter, and loading/error/empty states.
+- Built Quiz Editor at `/teacher/chapters/[chapterId]/quiz` allowing adding, editing, reordering, deleting questions, adding/removing options, selecting exactly one correct option, and optional hints.
+- Enforced Zod validation for prompt, min 2 options, and exactly 1 correct option.
+- Confirmed Stories & Questions 4-round game wizard PNGs (`design/screens/teacher/stories_&_questions/`) are out of scope and left for T-DASH-022.
+- Validation passed: `npm run lint`, `npm run typecheck`, `npm test` (all 178 tests pass including 23 quiz model/component tests), and `npm run build`.
