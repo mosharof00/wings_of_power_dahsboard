@@ -1,6 +1,6 @@
 # T-DASH-016 — Teacher classes and students
 
-**Status:** Not started
+**Status:** Done
 
 ## Depends on
 
@@ -53,4 +53,25 @@ Teacher class and student rows in `docs/API.md` section 9.
 
 ## Notes
 
--
+- Documented teacher class and student endpoints in `docs/API.md` section 9 (`GET /api/teacher/classes`, `GET /api/teacher/classes/:id`, `GET /api/teacher/classes/:id/join-requests`, `POST /api/teacher/join-requests/:id/approve`, `POST /api/teacher/join-requests/:id/reject`, `GET /api/teacher/students`, `GET /api/teacher/students/:id`).
+- Implemented teacher class management in `src/features/teacher/classes/`:
+  - `model.ts`: types, normalization, and helpers for class names, codes, pending banner messages, and progress formatting.
+  - `api.ts`: API clients for class listing, detail, join requests, approval, and rejection.
+  - `class-switcher.tsx`: shared class switcher dropdown component.
+  - `class-list.tsx`: table showing class name, grade, join code, student count, pending request badge with clock icon, progress bar, last activity, and view action.
+  - `class-detail.tsx`: class overview (stats, story completion, circular class progress), students tab with pending approval cards and enrolled students table, and learning progress tab with students needing support.
+  - `join-request-dialog.tsx`: dialog matching design Frame 2147259604 with student preview, class details, Decline, and Approve actions.
+  - `model.test.tsx`: unit tests for model normalization, banner text, and helper functions.
+- Implemented teacher student management in `src/features/teacher/students/`:
+  - `model.ts`: types and normalization for student roster, student detail, story progress, badges, and points history.
+  - `api.ts`: API clients for student roster and student detail.
+  - `student-list.tsx`: roster table showing avatar, student name, handle, student ID, class, kindness points, progress bar, safe space report count, search, and class switcher filter.
+  - `student-detail.tsx`: student profile header (avatar, name, handle, class, joined date), metric cards (points, badges, chapters finished, quiz average), overview personal details & learning snapshot, reading progress across stories/chapters, and points & badges history.
+  - `model.test.tsx`: unit tests for student item and detail normalization, status variants, and calculations.
+- Implemented App Router pages:
+  - `/teacher/classes` in `src/app/(dashboard)/teacher/classes/page.tsx`
+  - `/teacher/classes/[id]` in `src/app/(dashboard)/teacher/classes/[id]/page.tsx`
+  - `/teacher/students` in `src/app/(dashboard)/teacher/students/page.tsx`
+  - `/teacher/students/[id]` in `src/app/(dashboard)/teacher/students/[id]/page.tsx`
+- Confirmed that misfiled admin profile frames (`Frame 2147259576*` under `srudents/`, admin move-class, admin approve-account, and admin Jonah Levy tabs) were NOT used. The student detail view reflects only teacher-scoped endpoints and fields.
+- Validations pass: `npm run lint` (0 errors, 0 warnings), `npm run typecheck` (passed), `npm test` (21 test files, 155 tests passed), and `npm run build` (successful production build).
