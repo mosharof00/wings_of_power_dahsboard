@@ -1,6 +1,6 @@
 # T-DASH-018 — Teacher profile and settings
 
-**Status:** Not started
+**Status:** done
 
 ## Depends on
 
@@ -52,4 +52,10 @@ Admin Settings. A session-revoke API. Student settings.
 
 ## Notes
 
--
+- Documented teacher profile and settings object fields in `docs/API.md`.
+- Added open question 5 in `docs/OPEN_QUESTIONS.md` for the active sessions gap (`Dashboard-5.png` / `teacher_settings_help.png`); omitted sessions panel from Security tab until a sessions API contract exists.
+- Added open question 6 in `docs/OPEN_QUESTIONS.md` for Two-Factor Authentication (`Dashboard-3.png` / `teacher_settings_password.png`); omitted 2FA toggle until 2FA endpoints are defined.
+- Profile implemented at `/teacher/profile` matching design with view and edit form (name, email, phone, title, avatar, bio, department, qualification, experience, dob, gender, address) via `GET/PATCH /api/teacher/profile` and local caching.
+- Settings implemented at `/teacher/settings` with 4 tabs: Account (name, email, phone), Notification (email, push, weekly reports, quiet hours toggles), Preferences (dark mode, language, time zone, default class), and Security (change password form validating current, new, confirm password against `PATCH /api/auth/password`).
+- Active Sessions panel omitted per task instruction.
+- Unit and model tests in `model.test.tsx` pass. Project validation passes (`npm run lint`, `npm run typecheck`, `npm test`, `npm run build`).
