@@ -18,12 +18,12 @@ describe("dashboard nav", () => {
     expect(disabled.every((item) => item.href === undefined)).toBe(true);
   });
 
-  it("disables teacher Stories & Questions and keeps Profile and Settings", () => {
+  it("enables teacher Stories & Questions and keeps Profile and Settings", () => {
     const stories = teacherNav.find(
       (item) => item.label === "Stories & Questions",
     );
-    expect(stories?.disabled).toBe(true);
-    expect(stories?.href).toBeUndefined();
+    expect(stories?.disabled).toBeUndefined();
+    expect(stories?.href).toBe("/teacher/game-packs");
     expect(
       teacherNav.find((item) => item.label === "Profile")?.href,
     ).toBe("/teacher/profile");

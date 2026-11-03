@@ -1,6 +1,6 @@
 # T-DASH-022 — Game-show question packs
 
-**Status:** Not started
+**Status:** Done
 
 **Priority:** P1. Schedule after the P0 tasks. Decision D13: these screens are game-show question packs. Chapter quizzes are T-DASH-017.
 
@@ -52,4 +52,8 @@ P1 `CRUD /api/teacher/game-packs` in `docs/API.md` section 8.
 
 ## Notes
 
--
+- Enabled "Stories & Questions" sidebar item linking to `/teacher/game-packs`.
+- Implemented game question packs list view with filters, delete, and pagination.
+- Implemented interactive 4-round game pack wizard (`/teacher/game-packs/new` and `[id]`) covering Q1–Q4, draft save, and publish validation.
+- `teacher/game_questions/` duplicate folder and arrow icon were not used.
+- Validations all passing (lint clean, typecheck clean, 27 test files / 247 tests pass, next build 43/43 routes).

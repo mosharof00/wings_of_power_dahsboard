@@ -347,9 +347,8 @@ function QuizEditorForm({
             return (
               <div
                 key={question.id || `q-${qIdx}`}
-                className={`rounded-2xl border bg-card p-6 shadow-xs transition-colors ${
-                  error ? "border-destructive/60" : "border-border"
-                }`}
+                className={`rounded-2xl border bg-card p-6 shadow-xs transition-colors ${error ? "border-destructive/60" : "border-border"
+                  }`}
               >
                 {/* Question Card Header */}
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 pb-4">

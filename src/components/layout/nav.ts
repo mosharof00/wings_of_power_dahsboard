@@ -112,8 +112,8 @@ export const teacherNav: NavItem[] = [
   {
     label: "Stories & Questions",
     title: "Stories & Questions",
+    href: "/teacher/game-packs",
     icon: "stories",
-    disabled: true,
   },
   {
     label: "Profile",
