@@ -1,6 +1,11 @@
 import { api, callApi } from "@/lib/api/client";
 import type { Envelope } from "@/lib/api/envelope";
-import type { StudentDetail, StudentList, StudentListQuery, StudentStatus } from "./model";
+import {
+  normalizeStudentDetail,
+  normalizeStudentList,
+  type StudentListQuery,
+  type StudentStatus,
+} from "./model";
 
 type Callish<T> = Promise<{
   data?: Envelope<T>;
@@ -25,30 +30,37 @@ function client() {
   return api as unknown as LooseClient;
 }
 
-export function getStudents(query: StudentListQuery) {
-  return callApi<StudentList>(() =>
+export async function getStudents(query: StudentListQuery) {
+  const data = await callApi<unknown>(() =>
     asCall(client().GET("/admin/students", { params: { query } })),
   );
+  return normalizeStudentList(data as Parameters<typeof normalizeStudentList>[0]);
 }
 
-export function getStudent(id: string) {
-  return callApi<StudentDetail>(() => asCall(client().GET(`/admin/students/${id}`)));
+export async function getStudent(id: string) {
+  const data = await callApi<unknown>(() =>
+    asCall(client().GET(`/admin/students/${id}`)),
+  );
+  return normalizeStudentDetail(data as Parameters<typeof normalizeStudentDetail>[0]);
 }
 
-export function updateStudentStatus(id: string, status: StudentStatus) {
-  return callApi<StudentDetail>(() =>
+export async function updateStudentStatus(id: string, status: StudentStatus) {
+  await callApi<unknown>(() =>
     asCall(client().PATCH(`/admin/students/${id}`, { body: { status } })),
   );
+  return getStudent(id);
 }
 
-export function approveStudent(id: string) {
-  return callApi<StudentDetail>(() =>
+export async function approveStudent(id: string) {
+  await callApi<unknown>(() =>
     asCall(client().POST(`/admin/students/${id}/approve`)),
   );
+  return getStudent(id);
 }
 
-export function moveStudent(id: string, classId: string) {
-  return callApi<StudentDetail>(() =>
+export async function moveStudent(id: string, classId: string) {
+  await callApi<unknown>(() =>
     asCall(client().POST(`/admin/students/${id}/move-class`, { body: { classId } })),
   );
+  return getStudent(id);
 }

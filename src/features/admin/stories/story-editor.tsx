@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import { ErrorState, LoadingState } from "@/components/feedback/states";
 import { StatusBadge } from "@/components/feedback/status-badge";
 import { toastSuccess } from "@/components/feedback/toast";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -30,6 +30,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ApiError } from "@/lib/api/envelope";
+import { cn } from "@/lib/utils";
 import {
   addChapter,
   createStory,
@@ -491,14 +492,13 @@ function StoryEditorForm({
 
           {/* Action Bar */}
           <div className="flex items-center justify-between gap-3">
-            <Button
-              type="button"
-              variant="outline"
-              render={<Link href="/admin/stories" />}
+            <Link
+              href="/admin/stories"
+              className={cn(buttonVariants({ variant: "outline" }))}
             >
               <ArrowLeft className="size-4" />
               Back to Stories
-            </Button>
+            </Link>
 
             <Button type="submit" disabled={detailsSaving}>
               {detailsSaving ? (

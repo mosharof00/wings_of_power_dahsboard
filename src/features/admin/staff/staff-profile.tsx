@@ -39,12 +39,14 @@ export function StaffProfile({ id }: { id: string }) {
 
   const member = query.data;
   const classes = member.classes ?? [];
+  const displayName = member.name?.trim() || member.email || "Staff";
+  const handle = member.handle?.trim() || "—";
 
   async function onRemind(current: StaffMember) {
     await remindStaff(current.id);
     toastSuccess({
       title: "Reminder sent",
-      description: `The invite was sent again to ${current.name}.`,
+      description: `The invite was sent again to ${current.name || current.email}.`,
     });
   }
 
@@ -55,20 +57,20 @@ export function StaffProfile({ id }: { id: string }) {
           User Management
         </Link>
         {" / Staff / "}
-        <span className="text-foreground">{member.name}</span>
+        <span className="text-foreground">{displayName}</span>
       </p>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <span className="flex size-12 items-center justify-center rounded-full bg-primary/15 font-medium text-primary">
-            {member.name.slice(0, 1)}
+            {displayName.slice(0, 1).toUpperCase()}
           </span>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-xl font-semibold">{member.name}</h2>
+              <h2 className="text-xl font-semibold">{displayName}</h2>
               <StatusBadge variant={staffStatusVariant(member.status)} />
             </div>
             <p className="text-sm text-muted-foreground">
-              @{member.handle} · {member.email}
+              @{handle} · {member.email}
             </p>
           </div>
         </div>
@@ -95,13 +97,16 @@ export function StaffProfile({ id }: { id: string }) {
               label="Status"
               value={<StatusBadge variant={staffStatusVariant(member.status)} />}
             />
-            <Detail label="Full name" value={member.name} />
+            <Detail label="Full name" value={displayName} />
             <Detail label="Role" value={staffRoleLabel(member)} />
-            <Detail label="Username" value={`@${member.handle}`} />
-            <Detail label="Assigned Class" value={String(classes.length || member.assignedClass)} />
-            <Detail label="Email" value={member.email} />
+            <Detail label="Username" value={`@${handle}`} />
+            <Detail
+              label="Assigned Class"
+              value={member.assignedClass || String(classes.length) || "—"}
+            />
+            <Detail label="Email" value={member.email || "—"} />
             <Detail label="Date Joined" value={member.joinedAt || "—"} />
-            <Detail label="Phone Number" value={member.phone} />
+            <Detail label="Phone Number" value={member.phone || "—"} />
           </dl>
         </article>
         <article className="rounded-xl border bg-card p-4">

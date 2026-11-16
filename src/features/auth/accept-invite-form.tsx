@@ -81,7 +81,7 @@ export function AcceptInviteForm() {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary">Full Name</FormLabel>
+              <FormLabel className="text-foreground">Full Name</FormLabel>
               <FormControl>
                 <Input
                   {...field}
@@ -99,7 +99,7 @@ export function AcceptInviteForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary">New password</FormLabel>
+              <FormLabel className="text-foreground">New password</FormLabel>
               <FormControl>
                 <PasswordInput
                   {...field}
@@ -116,7 +116,7 @@ export function AcceptInviteForm() {
           name="confirm"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary">Confirm Password</FormLabel>
+              <FormLabel className="text-foreground">Confirm Password</FormLabel>
               <FormControl>
                 <PasswordInput
                   {...field}

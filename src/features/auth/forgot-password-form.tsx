@@ -12,15 +12,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { forgotPassword } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/envelope";
 import {
   AuthFooter,
   AuthHeading,
   AuthSubmit,
+  EmailInput,
   RootError,
-  authInputClass,
 } from "./auth-ui";
 import { forgotPasswordSchema, type ForgotPasswordValues } from "./schemas";
 
@@ -55,14 +54,12 @@ export function ForgotPasswordForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary">Email</FormLabel>
+              <FormLabel className="text-foreground">Email</FormLabel>
               <FormControl>
-                <Input
+                <EmailInput
                   {...field}
-                  type="email"
                   autoComplete="email"
                   placeholder="Enter your email address"
-                  className={authInputClass}
                 />
               </FormControl>
               <FormMessage />
@@ -70,7 +67,7 @@ export function ForgotPasswordForm() {
           )}
         />
         {sent ? (
-          <p role="status" className="text-sm text-white/80">
+          <p role="status" className="text-sm text-muted-foreground">
             Check your email for the reset link.
           </p>
         ) : null}

@@ -27,17 +27,21 @@ const columns: ColumnDef<DataTableFeatures, StaffMember>[] = [
   {
     id: "staff",
     header: "Staff",
-    cell: ({ row }) => (
-      <span className="flex items-center gap-3">
-        <span className="flex size-9 items-center justify-center rounded-full bg-primary/15 text-sm font-medium text-primary">
-          {row.original.name.slice(0, 1)}
+    cell: ({ row }) => {
+      const name = row.original.name?.trim() || row.original.email || "Staff";
+      const handle = row.original.handle?.trim() || "—";
+      return (
+        <span className="flex items-center gap-3">
+          <span className="flex size-9 items-center justify-center rounded-full bg-primary/15 text-sm font-medium text-primary">
+            {name.slice(0, 1).toUpperCase()}
+          </span>
+          <span>
+            <span className="block font-medium">{name}</span>
+            <span className="block text-xs text-muted-foreground">@{handle}</span>
+          </span>
         </span>
-        <span>
-          <span className="block font-medium">{row.original.name}</span>
-          <span className="block text-xs text-muted-foreground">@{row.original.handle}</span>
-        </span>
-      </span>
-    ),
+      );
+    },
   },
   {
     id: "contact",

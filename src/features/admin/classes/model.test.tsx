@@ -11,6 +11,8 @@ import {
   classStatusVariant,
   createClassPayload,
   createClassSchema,
+  normalizeClassList,
+  normalizeClassRequestLists,
   requestBanner,
   teacherChoices,
 } from "./model";
@@ -49,9 +51,42 @@ describe("class payloads", () => {
     ).toEqual({
       name: "Grade 4 · Amber",
       grade: "Grade 4",
-      ageGroup: "6-9",
+      ageGroup: "AGE_6_9",
       teacherId: "teacher-1",
     });
+  });
+
+  it("maps Nest class rows onto list columns", () => {
+    const list = normalizeClassList({
+      items: [
+        {
+          id: "class-1",
+          name: "Grade 4 · Amber",
+          gradeLabel: "Grade 4",
+          ageGroup: "AGE_6_9",
+          activeCode: { code: "864320", expiresAt: null },
+          membershipCounts: { pending: 2, approved: 1, rejected: 0 },
+        },
+      ],
+      total: 1,
+      page: 1,
+      perPage: 15,
+      lastPage: 1,
+    });
+    expect(list.items[0]).toMatchObject({
+      name: "Grade 4 · Amber",
+      grade: "Grade 4",
+      ageGroup: "6–9",
+      code: "864320",
+      studentCount: 1,
+      status: "ACTIVE",
+    });
+    const requests = normalizeClassRequestLists({
+      items: [],
+      total: 0,
+    });
+    expect(requests.requests).toEqual([]);
+    expect(requests.renewals).toEqual([]);
   });
 
   it("builds change-teacher payload", () => {

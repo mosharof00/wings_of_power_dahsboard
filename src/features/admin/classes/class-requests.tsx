@@ -14,10 +14,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ApiError } from "@/lib/api/envelope";
-import { approveClassRequest, getClassRequests, rejectClassRequest } from "./api";
+import { approveClassRequest, getClassRequests, getClasses, rejectClassRequest } from "./api";
 import { ClassesChrome } from "./classes-chrome";
 import { CodeDialog } from "./code-dialog";
-import type { ClassRequest, IssuedCode } from "./model";
+import { classListQuery, type ClassRequest, type IssuedCode } from "./model";
 
 export function ClassRequests() {
   const queryClient = useQueryClient();
@@ -27,6 +27,11 @@ export function ClassRequests() {
   const query = useQuery({
     queryKey: ["admin-class-requests"],
     queryFn: getClassRequests,
+    retry: false,
+  });
+  const classesMeta = useQuery({
+    queryKey: ["admin-classes", classListQuery({ page: 1 })],
+    queryFn: () => getClasses(classListQuery({ page: 1 })),
     retry: false,
   });
 
@@ -76,8 +81,8 @@ export function ClassRequests() {
   return (
     <ClassesChrome
       current="requests"
-      classCount={lists.classCount}
-      requestCount={lists.requests.length}
+      classCount={classesMeta.data?.total ?? lists.classCount}
+      requestCount={lists.requests.length + lists.renewals.length}
     >
       {lists.renewals.length > 0 ? (
         <section className="rounded-xl border bg-card">
@@ -94,34 +99,45 @@ export function ClassRequests() {
                     Requested by {renewal.teacherName}
                   </p>
                 </div>
-                <Button render={<Link href="/admin/classes/renewals" />}>Review</Button>
+                <Link
+                  href="/admin/classes/renewals"
+                  className="text-sm font-medium text-primary"
+                >
+                  Review
+                </Link>
               </li>
             ))}
           </ul>
         </section>
       ) : null}
-      <ul className="grid gap-3">
-        {lists.requests.map((request) => (
-          <li
-            key={request.id}
-            className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-card px-4 py-3"
-          >
-            <div>
-              <p className="font-medium">{request.teacherName}</p>
-              <p className="text-sm text-muted-foreground">
-                @{request.teacherHandle} · Requested on {request.requestedAt}
-              </p>
-            </div>
-            <button
-              type="button"
-              className="text-sm text-primary"
-              onClick={() => setSelected(request)}
+      {lists.requests.length === 0 ? (
+        <p className="rounded-xl border bg-card px-4 py-6 text-sm text-muted-foreground">
+          No class creation requests.
+        </p>
+      ) : (
+        <ul className="grid gap-3">
+          {lists.requests.map((request) => (
+            <li
+              key={request.id}
+              className="flex flex-wrap items-center justify-between gap-3 rounded-xl border bg-card px-4 py-3"
             >
-              Review Now →
-            </button>
-          </li>
-        ))}
-      </ul>
+              <div>
+                <p className="font-medium">{request.teacherName}</p>
+                <p className="text-sm text-muted-foreground">
+                  @{request.teacherHandle} · Requested on {request.requestedAt}
+                </p>
+              </div>
+              <button
+                type="button"
+                className="text-sm text-primary"
+                onClick={() => setSelected(request)}
+              >
+                Review Now →
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
       <Dialog open={selected !== null} onOpenChange={(open) => !open && setSelected(null)}>
         <DialogContent>
           {selected ? (

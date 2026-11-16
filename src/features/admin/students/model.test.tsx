@@ -4,6 +4,8 @@ import { StatusBadge } from "@/components/feedback/status-badge";
 import {
   badgeCountLabel,
   moveClassPayload,
+  normalizeStudentDetail,
+  normalizeStudentList,
   powerHeroesValue,
   quizStatusLabel,
   scoreLabel,
@@ -62,6 +64,65 @@ describe("student payloads", () => {
     expect(scoreLabel(null)).toBe("—");
     expect(badgeCountLabel(2)).toBe("02");
     expect(quizStatusLabel("WAITING")).toBe("Waiting");
+  });
+
+  it("maps the Nest list item onto dashboard columns", () => {
+    const list = normalizeStudentList({
+      items: [
+        {
+          id: "stu-1",
+          username: "jonah41",
+          nickname: "Jonah",
+          realName: "Jonah Levy",
+          status: "PENDING",
+          avatarUrl: null,
+          class: { id: "class-amber", name: "Grade 4 · Amber" },
+        },
+      ],
+      total: 1,
+      page: 1,
+      perPage: 12,
+      lastPage: 1,
+    });
+    expect(list.items[0]).toMatchObject({
+      id: "stu-1",
+      name: "Jonah Levy",
+      handle: "jonah41",
+      classId: "class-amber",
+      className: "Grade 4 · Amber",
+      positivePoints: 0,
+      progressPercent: 0,
+      reportCount: 0,
+      status: "PENDING",
+    });
+  });
+
+  it("maps nested detail user and membership", () => {
+    const detail = normalizeStudentDetail({
+      user: {
+        id: "stu-1",
+        username: "jonah41",
+        nickname: "Jonah",
+        realName: "Jonah Levy",
+        ageLabel: "9 years",
+        status: "ACTIVE",
+      },
+      membership: {
+        id: "mem-1",
+        classId: "class-amber",
+        className: "Grade 4 · Amber",
+        status: "APPROVED",
+      },
+      points: [],
+      badges: [],
+      progress: [],
+      reports: [],
+    });
+    expect(detail.name).toBe("Jonah Levy");
+    expect(detail.handle).toBe("jonah41");
+    expect(detail.className).toBe("Grade 4 · Amber");
+    expect(detail.ageLabel).toBe("9 years");
+    expect(detail.progress).toEqual([]);
   });
 });
 

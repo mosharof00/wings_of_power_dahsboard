@@ -9,7 +9,7 @@ import { useMemo, useState } from "react";
 import { DataTable, type DataTableFeatures } from "@/components/data-table/data-table";
 import { ErrorState } from "@/components/feedback/states";
 import { StatusBadge } from "@/components/feedback/status-badge";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { ApiError } from "@/lib/api/envelope";
 import { cn } from "@/lib/utils";
 import { getAdminReports } from "./api";
@@ -280,14 +280,13 @@ export function SafeSpaceList() {
             empty="No reports found."
             getRowId={(row) => row.id}
             rowAction={(row) => (
-              <Button
-                variant="ghost"
-                size="icon"
+              <Link
+                href={`/admin/safe-space/${row.id}`}
                 aria-label={`View report ${row.publicRef || row.id}`}
-                render={<Link href={`/admin/safe-space/${row.id}`} />}
+                className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
               >
                 <Eye className="size-4" />
-              </Button>
+              </Link>
             )}
             filters={
               <div className="flex flex-wrap items-center gap-2">

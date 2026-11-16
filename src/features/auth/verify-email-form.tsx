@@ -125,7 +125,7 @@ export function VerifyEmailForm() {
         />
         <RootError message={form.formState.errors.root?.message} />
         <AuthSubmit pending={form.formState.isSubmitting}>Verify</AuthSubmit>
-        <p className="text-center text-sm text-white/80">
+        <p className="text-center text-sm text-muted-foreground">
           Don&apos;t receive code?{" "}
           <button type="button" className="font-medium text-primary">
             Resend Again

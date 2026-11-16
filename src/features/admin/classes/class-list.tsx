@@ -8,8 +8,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { DataTable, type DataTableFeatures } from "@/components/data-table/data-table";
 import { ErrorState } from "@/components/feedback/states";
 import { StatusBadge } from "@/components/feedback/status-badge";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { ApiError } from "@/lib/api/envelope";
+import { cn } from "@/lib/utils";
 import { getClasses } from "./api";
 import { ClassesChrome } from "./classes-chrome";
 import {
@@ -80,9 +81,12 @@ export function ClassList() {
       {pending > 0 ? (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-primary/10 px-4 py-3">
           <p className="text-sm text-primary">{requestBanner(pending)}</p>
-          <Button variant="outline" render={<Link href="/admin/classes/requests" />}>
+          <Link
+            href="/admin/classes/requests"
+            className={cn(buttonVariants({ variant: "outline" }))}
+          >
             Review Requests
-          </Button>
+          </Link>
         </div>
       ) : null}
       {query.isError ? (
@@ -107,14 +111,13 @@ export function ClassList() {
           isLoading={query.isPending}
           getRowId={(row) => row.id}
           rowAction={(row) => (
-            <Button
-              variant="ghost"
-              size="icon"
+            <Link
+              href={`/admin/classes/${row.id}`}
               aria-label={`View ${row.name}`}
-              render={<Link href={`/admin/classes/${row.id}`} />}
+              className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
             >
               <Eye />
-            </Button>
+            </Link>
           )}
         />
       )}

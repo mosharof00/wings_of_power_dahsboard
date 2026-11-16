@@ -136,3 +136,199 @@ export function quizStatusLabel(status: QuizStatus) {
   if (status === "REMAINING") return "Remaining";
   return "Waiting";
 }
+
+type ApiClass = { id?: string; name?: string } | null;
+
+type ApiStudentListItem = {
+  id?: string;
+  name?: string | null;
+  handle?: string | null;
+  username?: string | null;
+  nickname?: string | null;
+  realName?: string | null;
+  avatarUrl?: string | null;
+  studentCode?: string | null;
+  classId?: string | null;
+  className?: string | null;
+  class?: ApiClass;
+  positivePoints?: number | null;
+  progressPercent?: number | null;
+  reportCount?: number | null;
+  status?: string | null;
+};
+
+type ApiStudentDetail = ApiStudentListItem & {
+  ageLabel?: string | null;
+  user?: {
+    id?: string;
+    username?: string | null;
+    nickname?: string | null;
+    realName?: string | null;
+    ageLabel?: string | null;
+    status?: string | null;
+    avatarUrl?: string | null;
+  };
+  membership?: {
+    id?: string;
+    classId?: string | null;
+    className?: string | null;
+    status?: string | null;
+  } | null;
+  powerHeroesUnlocked?: number;
+  powerHeroesTotal?: number;
+  chaptersCompleted?: number;
+  progress?: StoryProgress[];
+  kindnessPoints?: number;
+  badgeCount?: number;
+  storyPoints?: StudentDetail["storyPoints"];
+  history?: StudentDetail["history"];
+  categories?: StudentDetail["categories"];
+  badges?: StudentDetail["badges"];
+  classAchievement?: StudentDetail["classAchievement"];
+  eligibility?: StudentDetail["eligibility"];
+  safeSpace?: StudentDetail["safeSpace"];
+  classOptions?: ClassOption[];
+  reports?: unknown[];
+  points?: unknown[];
+};
+
+function asStatus(value: string | null | undefined): StudentStatus {
+  if (value === "PENDING" || value === "INACTIVE") return value;
+  return "ACTIVE";
+}
+
+function displayName(row: {
+  name?: string | null;
+  realName?: string | null;
+  nickname?: string | null;
+  username?: string | null;
+  handle?: string | null;
+}) {
+  return (
+    row.name?.trim() ||
+    row.realName?.trim() ||
+    row.nickname?.trim() ||
+    row.username?.trim() ||
+    row.handle?.trim() ||
+    "Student"
+  );
+}
+
+function displayHandle(row: {
+  handle?: string | null;
+  username?: string | null;
+  nickname?: string | null;
+}) {
+  return row.handle?.trim() || row.username?.trim() || row.nickname?.trim() || "—";
+}
+
+export function normalizeStudentRow(
+  raw: ApiStudentListItem & { reports?: unknown[] },
+): StudentRow {
+  const id = raw.id ?? "";
+  const classId = raw.classId ?? raw.class?.id ?? "";
+  const className = raw.className ?? raw.class?.name ?? "—";
+  return {
+    id,
+    name: displayName(raw),
+    handle: displayHandle(raw),
+    studentCode: raw.studentCode?.trim() || id.slice(0, 8).toUpperCase() || "—",
+    classId,
+    className,
+    positivePoints: raw.positivePoints ?? 0,
+    progressPercent: raw.progressPercent ?? 0,
+    reportCount:
+      raw.reportCount ?? (Array.isArray(raw.reports) ? raw.reports.length : 0),
+    status: asStatus(raw.status),
+  };
+}
+
+export function normalizeStudentList(raw: {
+  items?: ApiStudentListItem[];
+  total?: number;
+  page?: number;
+  perPage?: number;
+  lastPage?: number;
+  classOptions?: ClassOption[];
+}): StudentList {
+  const items = (raw.items ?? []).map(normalizeStudentRow);
+  const classOptions =
+    raw.classOptions ??
+    Array.from(
+      new Map(
+        items
+          .filter((item) => item.classId)
+          .map((item) => [item.classId, { id: item.classId, name: item.className }]),
+      ).values(),
+    );
+  return {
+    items,
+    total: raw.total ?? items.length,
+    page: raw.page ?? 1,
+    perPage: raw.perPage ?? STUDENT_PER_PAGE,
+    lastPage: raw.lastPage ?? 1,
+    classOptions,
+  };
+}
+
+export function normalizeStudentDetail(raw: ApiStudentDetail): StudentDetail {
+  const user = raw.user;
+  const membership = raw.membership;
+  const base = normalizeStudentRow({
+    id: raw.id ?? user?.id,
+    name: raw.name,
+    realName: raw.realName ?? user?.realName,
+    nickname: raw.nickname ?? user?.nickname,
+    username: raw.username ?? user?.username,
+    handle: raw.handle,
+    studentCode: raw.studentCode,
+    classId: raw.classId ?? membership?.classId ?? raw.class?.id,
+    className: raw.className ?? membership?.className ?? raw.class?.name,
+    class: raw.class,
+    positivePoints: raw.positivePoints,
+    progressPercent: raw.progressPercent,
+    reportCount: raw.reportCount,
+    status: raw.status ?? user?.status,
+    reports: raw.reports,
+  });
+  const className = base.className === "—" ? "Unassigned" : base.className;
+  return {
+    ...base,
+    ageLabel: raw.ageLabel ?? user?.ageLabel ?? "—",
+    powerHeroesUnlocked: raw.powerHeroesUnlocked ?? 0,
+    powerHeroesTotal: raw.powerHeroesTotal ?? 8,
+    chaptersCompleted: raw.chaptersCompleted ?? 0,
+    progress: raw.progress ?? [],
+    kindnessPoints: raw.kindnessPoints ?? 0,
+    badgeCount: raw.badgeCount ?? 0,
+    storyPoints: raw.storyPoints ?? [],
+    history: raw.history ?? [],
+    categories: raw.categories ?? [],
+    badges: raw.badges ?? [],
+    classAchievement: raw.classAchievement ?? {
+      className,
+      status: base.status,
+      completedChapters: 0,
+      completedChapterTotal: 0,
+      positivePoints: 0,
+      kindnessPoints: 0,
+    },
+    eligibility: raw.eligibility ?? {
+      storiesCompleted: 0,
+      storiesTotal: 2,
+      chaptersCompleted: 0,
+      chaptersTotal: 6,
+      scorePercent: 0,
+      scoreRequired: 70,
+      defenseResponse: "No response recorded",
+      defenseKindness: "Not available",
+    },
+    safeSpace: raw.safeSpace ?? {
+      reportCount: Array.isArray(raw.reports) ? raw.reports.length : 0,
+      newCount: 0,
+      reviewingCount: 0,
+      addressedCount: 0,
+    },
+    classOptions: raw.classOptions ?? [],
+  };
+}

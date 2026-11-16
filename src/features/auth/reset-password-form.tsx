@@ -59,7 +59,7 @@ export function ResetPasswordForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary">New password</FormLabel>
+              <FormLabel className="text-foreground">New password</FormLabel>
               <FormControl>
                 <PasswordInput
                   {...field}
@@ -76,7 +76,7 @@ export function ResetPasswordForm() {
           name="confirm"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary">Confirm Password</FormLabel>
+              <FormLabel className="text-foreground">Confirm Password</FormLabel>
               <FormControl>
                 <PasswordInput
                   {...field}

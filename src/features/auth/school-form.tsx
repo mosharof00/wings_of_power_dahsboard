@@ -68,7 +68,7 @@ export function SchoolForm() {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-primary">School Name</FormLabel>
+                <FormLabel className="text-foreground">School Name</FormLabel>
                 <FormControl>
                   <Input
                     {...field}

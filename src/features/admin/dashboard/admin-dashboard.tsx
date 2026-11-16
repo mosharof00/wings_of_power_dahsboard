@@ -73,13 +73,22 @@ export function AdminDashboardView({
   data: AdminDashboard;
   greetingText: string;
 }) {
-  const segments = donutSegments(data.students);
+  const students = data.students ?? { total: data.totalStudents ?? 0 };
+  const stories = data.stories ?? { published: 0, drafts: 0, archived: 0 };
+  const attention = data.attention ?? {
+    classRequests: 0,
+    studentApprovals: data.pendingStudents ?? 0,
+    safeSpaceNew: 0,
+    safeSpaceFollowUp: 0,
+  };
+  const week = data.week ?? [];
+  const segments = donutSegments(students);
   return (
     <div className="grid gap-4">
       <div>
         <h2 className="text-2xl font-semibold text-foreground">{greetingText}</h2>
         <p className="text-sm text-muted-foreground">
-          {attentionLine(data.attentionCount)}
+          {attentionLine(data.attentionCount ?? 0)}
         </p>
       </div>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -116,20 +125,26 @@ export function AdminDashboardView({
         <section className="grid gap-4">
           <article className="rounded-xl border bg-card p-4">
             <h3 className="font-medium text-foreground">Learning Overview</h3>
-            <LearningChart week={data.week} />
+            <LearningChart week={week} />
           </article>
           <div className="grid gap-4 sm:grid-cols-2">
-            <PercentCard label="Story completion" percent={data.storyCompletionPercent} />
-            <PercentCard label="Quiz Completion" percent={data.quizCompletionPercent} />
+            <PercentCard
+              label="Story completion"
+              percent={data.storyCompletionPercent ?? 0}
+            />
+            <PercentCard
+              label="Quiz Completion"
+              percent={data.quizCompletionPercent ?? 0}
+            />
           </div>
         </section>
         <section className="grid content-start gap-4">
           <article className="rounded-xl border bg-card p-4">
             <h3 className="font-medium text-foreground">Story Overview</h3>
             <div className="mt-4 grid grid-cols-3 gap-3">
-              <StoryCount label="Published" value={data.stories.published} />
-              <StoryCount label="Drafts" value={data.stories.drafts} />
-              <StoryCount label="Archived" value={data.stories.archived} />
+              <StoryCount label="Published" value={stories.published} />
+              <StoryCount label="Drafts" value={stories.drafts} />
+              <StoryCount label="Archived" value={stories.archived} />
             </div>
             <div className="mt-4 flex justify-center">
               <Link
@@ -145,21 +160,21 @@ export function AdminDashboardView({
             <div className="mt-3 grid gap-3">
               <AttentionRow
                 title="Pending Class Requests"
-                detail={classRequestLine(data.attention.classRequests)}
+                detail={classRequestLine(attention.classRequests)}
                 href={reviewHrefs.classRequests}
                 label="Review class requests"
               />
               <AttentionRow
                 title="Pending Student Approvals"
-                detail={studentApprovalLine(data.attention.studentApprovals)}
+                detail={studentApprovalLine(attention.studentApprovals)}
                 href={reviewHrefs.studentApprovals}
                 label="Review student approvals"
               />
               <AttentionRow
                 title="Safe Space Reports"
                 detail={safeSpaceLine(
-                  data.attention.safeSpaceNew,
-                  data.attention.safeSpaceFollowUp,
+                  attention.safeSpaceNew,
+                  attention.safeSpaceFollowUp,
                 )}
                 href={reviewHrefs.safeSpace}
                 label="Review Safe Space reports"
@@ -171,14 +186,14 @@ export function AdminDashboardView({
       <div className="grid gap-4 xl:grid-cols-3">
         <article className="rounded-xl border bg-card p-4">
           <h3 className="font-medium text-foreground">Top Students</h3>
-          {data.topStudents.length === 0 ? (
+          {(data.topStudents ?? []).length === 0 ? (
             <EmptyState
               title="No top students"
               description="Students with kindness points will appear here."
             />
           ) : (
             <ul className="mt-3 grid gap-3">
-              {data.topStudents.map((student) => (
+              {(data.topStudents ?? []).map((student) => (
                 <li key={`${student.name}-${student.grade}`} className="flex items-center gap-3">
                   <span className="flex size-9 items-center justify-center rounded-full bg-primary/15 text-sm font-medium text-primary">
                     {student.name.slice(0, 1)}
@@ -202,7 +217,7 @@ export function AdminDashboardView({
         </article>
         <article className="rounded-xl border bg-card p-4">
           <h3 className="font-medium text-foreground">Students</h3>
-          <StudentDonut total={data.students.total} segments={segments} />
+          <StudentDonut total={students.total} segments={segments} />
           {segments.length > 0 ? (
             <ul className="flex flex-wrap justify-center gap-4 text-sm">
               {segments.map((segment, index) => (
@@ -219,14 +234,14 @@ export function AdminDashboardView({
         </article>
         <article className="rounded-xl border bg-card p-4">
           <h3 className="font-medium text-foreground">Recent Activity</h3>
-          {data.activity.length === 0 ? (
+          {(data.activity ?? []).length === 0 ? (
             <EmptyState
               title="No recent activity"
               description="New enrollments, stories, and reports will appear here."
             />
           ) : (
             <ul className="mt-3 grid gap-4">
-              {data.activity.map((item) => (
+              {(data.activity ?? []).map((item) => (
                 <li key={`${item.actor}-${item.at}`} className="flex gap-3">
                   <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium">
                     {item.actor.slice(0, 1)}

@@ -12,8 +12,9 @@ import { DataTable, type DataTableFeatures } from "@/components/data-table/data-
 import { ErrorState } from "@/components/feedback/states";
 import { StatusBadge } from "@/components/feedback/status-badge";
 import { toastSuccess } from "@/components/feedback/toast";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { ApiError } from "@/lib/api/envelope";
+import { cn } from "cn";
 import { getStories, updateStory } from "./api";
 import { DeleteStoryDialog } from "./delete-story-dialog";
 import {
@@ -237,14 +238,13 @@ export function StoriesList() {
                     Publish
                   </Button>
                 ) : null}
-                <Button
-                  variant="ghost"
-                  size="icon"
+                <Link
+                  href={`/admin/stories/${row.id}`}
                   aria-label={`Edit ${row.title}`}
-                  render={<Link href={`/admin/stories/${row.id}`} />}
+                  className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
                 >
                   <Pencil className="size-4" />
-                </Button>
+                </Link>
                 <Button
                   variant="ghost"
                   size="icon"

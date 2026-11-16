@@ -1,10 +1,11 @@
 import { api, callApi } from "@/lib/api/client";
 import type { Envelope } from "@/lib/api/envelope";
-import type {
-  ClassDetail,
-  ClassList,
-  ClassRequestLists,
-  IssuedCode,
+import {
+  normalizeClassDetail,
+  normalizeClassList,
+  normalizeClassRequestLists,
+  normalizeIssuedCode,
+  type ClassDetail,
 } from "./model";
 
 type Callish<T> = Promise<{
@@ -29,51 +30,82 @@ function client() {
   return api as unknown as LooseClient;
 }
 
-export function getClasses(query: { page: number; perPage: number; q?: string }) {
-  return callApi<ClassList>(() =>
+export async function getClasses(query: {
+  page: number;
+  perPage: number;
+  q?: string;
+}) {
+  const data = await callApi<unknown>(() =>
     asCall(client().GET("/admin/classes", { params: { query } })),
   );
+  return normalizeClassList(data as Parameters<typeof normalizeClassList>[0]);
 }
 
-export function getClass(id: string) {
-  return callApi<ClassDetail>(() => asCall(client().GET(`/admin/classes/${id}`)));
+export async function getClass(id: string) {
+  const data = await callApi<unknown>(() =>
+    asCall(client().GET(`/admin/classes/${id}`)),
+  );
+  return normalizeClassDetail(data as Parameters<typeof normalizeClassDetail>[0]);
 }
 
-export function createClass(body: {
+export async function createClass(body: {
   name: string;
   grade: string;
   ageGroup: string;
   teacherId: string;
 }) {
-  return callApi<ClassDetail>(() => asCall(client().POST("/admin/classes", { body })));
+  const data = await callApi<unknown>(() =>
+    asCall(client().POST("/admin/classes", { body })),
+  );
+  return normalizeClassDetail(data as Parameters<typeof normalizeClassDetail>[0]);
 }
 
-export function changeTeacher(id: string, teacherId: string) {
-  return callApi<ClassDetail>(() =>
+export async function changeTeacher(id: string, teacherId: string) {
+  await callApi<unknown>(() =>
     asCall(client().POST(`/admin/classes/${id}/change-teacher`, { body: { teacherId } })),
   );
+  return getClass(id);
 }
 
-export function regenerateCode(id: string) {
-  return callApi<IssuedCode>(() => asCall(client().POST(`/admin/classes/${id}/codes`)));
+export async function regenerateCode(id: string) {
+  const data = await callApi<{ className?: string; code?: string; classId?: string }>(() =>
+    asCall(client().POST(`/admin/classes/${id}/codes`)),
+  );
+  return normalizeIssuedCode(data);
 }
 
-export function getClassRequests() {
-  return callApi<ClassRequestLists>(() => asCall(client().GET("/admin/class-requests")));
-}
-
-export function approveClassRequest(id: string) {
-  return callApi<IssuedCode>(() =>
-    asCall(client().POST(`/admin/class-requests/${id}/approve`)),
+export async function getClassRequests() {
+  const data = await callApi<unknown>(() =>
+    asCall(client().GET("/admin/class-requests")),
+  );
+  return normalizeClassRequestLists(
+    data as Parameters<typeof normalizeClassRequestLists>[0],
   );
 }
 
-export function rejectClassRequest(id: string) {
+export async function approveClassRequest(id: string) {
+  const data = await callApi<{
+    className?: string;
+    code?: string;
+    resultingClassId?: string;
+  }>(() => asCall(client().POST(`/admin/class-requests/${id}/approve`)));
+  if (data?.code) return normalizeIssuedCode(data);
+  if (data?.resultingClassId) {
+    const detail = await getClass(data.resultingClassId);
+    return { className: detail.name, code: detail.code };
+  }
+  return normalizeIssuedCode(data);
+}
+
+export async function rejectClassRequest(id: string) {
   return callApi(() => client().POST(`/admin/class-requests/${id}/reject`));
 }
 
-export function approveRenewal(id: string) {
-  return callApi<IssuedCode>(() =>
+export async function approveRenewal(id: string) {
+  const data = await callApi<{ className?: string; code?: string }>(() =>
     asCall(client().POST(`/admin/code-renewals/${id}/approve`)),
   );
+  return normalizeIssuedCode(data);
 }
+
+export type { ClassDetail };

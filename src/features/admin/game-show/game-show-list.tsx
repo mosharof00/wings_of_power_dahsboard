@@ -10,7 +10,7 @@ import { DataTable, type DataTableFeatures } from "@/components/data-table/data-
 import { EmptyState, ErrorState, TableRowSkeleton } from "@/components/feedback/states";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { useSession } from "@/lib/auth/session";
 import { cn } from "@/lib/utils";
 import { getEligibilityConfig, getMatches } from "./api";
@@ -350,16 +350,17 @@ export function GameShowList() {
               />
             }
             rowAction={(row) => (
-              <Button
-                variant="ghost"
-                size="sm"
+              <Link
+                href={`/admin/game-show/${row.id}`}
                 aria-label={`View details for match ${row.id}`}
-                className="inline-flex items-center gap-1 font-medium text-primary hover:text-primary"
-                render={<Link href={`/admin/game-show/${row.id}`} />}
+                className={cn(
+                  buttonVariants({ variant: "ghost", size: "sm" }),
+                  "inline-flex items-center gap-1 font-medium text-primary hover:text-primary",
+                )}
               >
                 <Eye className="size-4" />
                 View
-              </Button>
+              </Link>
             )}
           />
         )}

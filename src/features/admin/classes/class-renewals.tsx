@@ -13,10 +13,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ApiError } from "@/lib/api/envelope";
-import { approveRenewal, getClassRequests } from "./api";
+import { approveRenewal, getClassRequests, getClasses } from "./api";
 import { ClassesChrome } from "./classes-chrome";
 import { CodeDialog } from "./code-dialog";
-import type { CodeRenewal, IssuedCode } from "./model";
+import { classListQuery, type CodeRenewal, type IssuedCode } from "./model";
 
 export function ClassRenewals() {
   const queryClient = useQueryClient();
@@ -26,6 +26,11 @@ export function ClassRenewals() {
   const query = useQuery({
     queryKey: ["admin-class-requests"],
     queryFn: getClassRequests,
+    retry: false,
+  });
+  const classesMeta = useQuery({
+    queryKey: ["admin-classes", classListQuery({ page: 1 })],
+    queryFn: () => getClasses(classListQuery({ page: 1 })),
     retry: false,
   });
 
@@ -63,8 +68,8 @@ export function ClassRenewals() {
   return (
     <ClassesChrome
       current="requests"
-      classCount={query.data.classCount}
-      requestCount={query.data.requests.length}
+      classCount={classesMeta.data?.total ?? query.data.classCount}
+      requestCount={query.data.requests.length + query.data.renewals.length}
     >
       <section className="rounded-xl border bg-card">
         <h3 className="border-b px-4 py-3 font-medium">Expired Class Code Renewal Requests</h3>

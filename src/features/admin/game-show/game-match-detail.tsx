@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { ErrorState } from "@/components/feedback/states";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { useSession } from "@/lib/auth/session";
 import { cn } from "@/lib/utils";
 import { getMatchDetail } from "./api";
@@ -70,12 +70,7 @@ export function GameMatchDetailView({ id }: { id: string }) {
           onRetry={() => void query.refetch()}
         />
         <div className="mt-4 text-center">
-          <Button
-            variant="outline"
-            render={<Link href="/admin/game-show" />}
-          >
-            Back to Match History
-          </Button>
+          <Link href="/admin/game-show" className={cn(buttonVariants({ variant: "outline" }))}>Back to Match History</Link>
         </div>
       </div>
     );
@@ -128,14 +123,13 @@ export function GameMatchDetailView({ id }: { id: string }) {
       {/* Top Header */}
       <div className="flex items-center justify-between border-b pb-4">
         <div className="flex items-center gap-3">
-          <Button
-            variant="ghost"
-            size="icon"
+          <Link
+            href="/admin/game-show"
             aria-label="Back to Game Show Activity"
-            render={<Link href="/admin/game-show" />}
+            className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
           >
             <ArrowLeft className="size-5" />
-          </Button>
+          </Link>
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-foreground">
               Match Details
@@ -145,14 +139,13 @@ export function GameMatchDetailView({ id }: { id: string }) {
             </p>
           </div>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
+        <Link
+          href="/admin/game-show"
           aria-label="Close"
-          render={<Link href="/admin/game-show" />}
+          className={cn(buttonVariants({ variant: "ghost", size: "icon" }))}
         >
           <X className="size-5" />
-        </Button>
+        </Link>
       </div>
 
       {/* Meta Information Bar */}
@@ -306,13 +299,12 @@ export function GameMatchDetailView({ id }: { id: string }) {
 
       {/* Bottom Close Button */}
       <div className="flex justify-end pt-4 border-t">
-        <Button
-          type="button"
-          variant="outline"
-          render={<Link href="/admin/game-show" />}
+        <Link
+          href="/admin/game-show"
+          className={cn(buttonVariants({ variant: "outline" }))}
         >
           Close
-        </Button>
+        </Link>
       </div>
     </div>
   );

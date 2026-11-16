@@ -10,7 +10,7 @@ import { DataTable, type DataTableFeatures } from "@/components/data-table/data-
 import { ErrorState, LoadingState } from "@/components/feedback/states";
 import { StatusBadge } from "@/components/feedback/status-badge";
 import { toastSuccess } from "@/components/feedback/toast";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { getStaff } from "@/features/admin/staff/api";
 import { studentStatusVariant } from "@/features/admin/students/model";
 import { ApiError } from "@/lib/api/envelope";
@@ -250,12 +250,12 @@ export function ClassDetail({ id }: { id: string }) {
             onPageChange={setStudentPage}
             getRowId={(row) => row.id}
             rowAction={(row) => (
-              <Button
-                variant="outline"
-                render={<Link href={`/admin/users/students/${row.id}`} />}
+              <Link
+                href={`/admin/users/students/${row.id}`}
+                className={cn(buttonVariants({ variant: "outline" }))}
               >
                 View
-              </Button>
+              </Link>
             )}
           />
         </div>

@@ -12,7 +12,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { ApiError } from "@/lib/api/envelope";
 import { getMe, staffLogin } from "@/lib/api/auth";
 import { writeAccessToken } from "@/lib/auth/storage";
@@ -20,9 +19,9 @@ import {
   AuthFooter,
   AuthHeading,
   AuthSubmit,
+  EmailInput,
   PasswordInput,
   RootError,
-  authInputClass,
 } from "./auth-ui";
 import { goToApp } from "./navigate";
 import { readPendingSchool } from "./pending-school";
@@ -81,7 +80,7 @@ export function SignInForm() {
     <Form {...form}>
       <form className="grid gap-5" onSubmit={form.handleSubmit(onSubmit)} noValidate>
         <AuthHeading
-          title="Welcome Back"
+          title="Welcome"
           subtitle="Sign in with your staff account"
         />
         <FormField
@@ -89,14 +88,12 @@ export function SignInForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary">Email</FormLabel>
+              <FormLabel className="text-foreground">Email</FormLabel>
               <FormControl>
-                <Input
+                <EmailInput
                   {...field}
-                  type="email"
                   autoComplete="email"
                   placeholder="Enter your email address"
-                  className={authInputClass}
                 />
               </FormControl>
               <FormMessage />
@@ -108,7 +105,7 @@ export function SignInForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-primary">Password</FormLabel>
+              <FormLabel className="text-foreground">Password</FormLabel>
               <FormControl>
                 <PasswordInput
                   {...field}
@@ -126,7 +123,7 @@ export function SignInForm() {
             name="remember"
             render={({ field }) => (
               <FormItem>
-                <label className="flex items-center gap-2 text-white/90">
+                <label className="flex items-center gap-2 text-muted-foreground">
                   <FormControl>
                     <input
                       type="checkbox"
