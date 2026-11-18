@@ -35,7 +35,13 @@ export function getStaffMember(id: string) {
   return callApi<StaffMember>(() => asCall(client().GET(`/admin/staff/${id}`)));
 }
 
-export function inviteStaff(body: { email: string; canAccessSafeSpace: boolean }) {
+export function inviteStaff(body: {
+  name: string;
+  email: string;
+  temporaryPassword: string;
+  canAccessSafeSpace: boolean;
+  assignedClass?: string;
+}) {
   return callApi(() => client().POST("/admin/staff/invite", { body }));
 }
 

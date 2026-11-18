@@ -26,6 +26,10 @@ export function schoolBody(name: string) {
   return { name: name.trim() };
 }
 
-export function resetPasswordBody(token: string, password: string) {
-  return { token, password };
+export function resetPasswordBody(
+  token: string,
+  password: string,
+  confirmPassword = password,
+) {
+  return { token, password, confirmPassword };
 }

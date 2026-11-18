@@ -19,11 +19,13 @@ import {
   type StudentDetail,
 } from "./model";
 import { ProfilePanels, profileTabs, type ProfileTab } from "./profile-panels";
+import { ResetStudentPasswordDialog } from "./reset-password-dialog";
 
 export function StudentProfile({ id }: { id: string }) {
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<ProfileTab>("details");
   const [moving, setMoving] = useState(false);
+  const [resettingPassword, setResettingPassword] = useState(false);
   const query = useQuery({
     queryKey: ["admin-students", id],
     queryFn: () => getStudent(id),
@@ -99,19 +101,30 @@ export function StudentProfile({ id }: { id: string }) {
             </p>
           </div>
         </div>
-        {student.status === "PENDING" ? (
-          <Button type="button" onClick={() => void onReview(student)}>
-            Review
-          </Button>
-        ) : student.status === "INACTIVE" ? (
-          <Button type="button" onClick={() => void onReactivate(student)}>
-            Reactivate
-          </Button>
-        ) : (
-          <Button type="button" onClick={() => setMoving(true)}>
-            Move to Another Class
-          </Button>
-        )}
+        <div className="flex flex-wrap gap-2">
+          {student.status === "ACTIVE" || student.status === "INACTIVE" ? (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setResettingPassword(true)}
+            >
+              Reset password
+            </Button>
+          ) : null}
+          {student.status === "PENDING" ? (
+            <Button type="button" onClick={() => void onReview(student)}>
+              Review
+            </Button>
+          ) : student.status === "INACTIVE" ? (
+            <Button type="button" onClick={() => void onReactivate(student)}>
+              Reactivate
+            </Button>
+          ) : (
+            <Button type="button" onClick={() => setMoving(true)}>
+              Move to Another Class
+            </Button>
+          )}
+        </div>
       </div>
       <div className="flex flex-wrap gap-4 border-b">
         {profileTabs.map((item) => (
@@ -145,6 +158,12 @@ export function StudentProfile({ id }: { id: string }) {
           });
           void queryClient.invalidateQueries({ queryKey: ["admin-students"] });
         }}
+      />
+      <ResetStudentPasswordDialog
+        studentId={student.id}
+        studentName={student.name}
+        open={resettingPassword}
+        onOpenChange={setResettingPassword}
       />
     </div>
   );

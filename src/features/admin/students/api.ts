@@ -64,3 +64,16 @@ export async function moveStudent(id: string, classId: string) {
   );
   return getStudent(id);
 }
+
+export async function resetStudentPassword(
+  id: string,
+  temporaryPassword?: string,
+) {
+  return callApi<{ id: string; temporaryPassword: string }>(() =>
+    asCall(
+      client().POST(`/admin/students/${id}/reset-password`, {
+        body: temporaryPassword ? { temporaryPassword } : {},
+      }),
+    ),
+  );
+}

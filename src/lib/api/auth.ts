@@ -21,7 +21,11 @@ export function forgotPassword(body: { email: string }) {
   return callApi(() => api.POST("/auth/admin/forgot-password", { body }));
 }
 
-export function resetPassword(body: { token: string; password: string }) {
+export function resetPassword(body: {
+  token: string;
+  password: string;
+  confirmPassword: string;
+}) {
   return callApi(() => api.POST("/auth/admin/reset-password", { body }));
 }
 

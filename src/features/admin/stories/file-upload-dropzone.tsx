@@ -1,7 +1,6 @@
 "use client";
 
 import { CheckCircle2, Loader2, Music, Upload, X } from "lucide-react";
-import Image from "next/image";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -96,12 +95,12 @@ export function FileUploadDropzone({
               </div>
             ) : (
               <div className="relative size-14 shrink-0 overflow-hidden rounded-lg border bg-background">
-                <Image
+                {/* Plain img: API media is absolute localhost/S3 URL (D56). */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                   src={currentUrl}
                   alt="Uploaded preview"
-                  fill
-                  className="object-cover"
-                  unoptimized
+                  className="size-full object-cover"
                 />
               </div>
             )}

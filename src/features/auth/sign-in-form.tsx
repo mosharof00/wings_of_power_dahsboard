@@ -16,7 +16,6 @@ import { ApiError } from "@/lib/api/envelope";
 import { getMe, staffLogin } from "@/lib/api/auth";
 import { writeAccessToken } from "@/lib/auth/storage";
 import {
-  AuthFooter,
   AuthHeading,
   AuthSubmit,
   EmailInput,
@@ -81,7 +80,7 @@ export function SignInForm() {
       <form className="grid gap-5" onSubmit={form.handleSubmit(onSubmit)} noValidate>
         <AuthHeading
           title="Welcome"
-          subtitle="Sign in with your staff account"
+          subtitle="Sign in with your account"
         />
         <FormField
           control={form.control}
@@ -146,11 +145,6 @@ export function SignInForm() {
         </div>
         <RootError message={form.formState.errors.root?.message} />
         <AuthSubmit pending={form.formState.isSubmitting}>Sign In</AuthSubmit>
-        <AuthFooter
-          prompt="Don't have any account?"
-          href="/sign-up"
-          label="Sign Up Here"
-        />
       </form>
     </Form>
   );

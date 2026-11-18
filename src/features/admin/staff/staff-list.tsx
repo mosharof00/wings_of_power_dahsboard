@@ -171,7 +171,7 @@ export function StaffList() {
         onInvited={(label) => {
           toastSuccess({
             title: "Invitation Sent",
-            description: `Invitation sent to ${label}`,
+            description: `${label} is Invited — email sent with sign-in details.`,
           });
           void queryClient.invalidateQueries({ queryKey: ["admin-staff"] });
         }}

@@ -38,23 +38,38 @@ describe("staff status", () => {
 });
 
 describe("staff payloads", () => {
-  it("invites with email and Safe Space permission only", () => {
+  it("invites with name, email, temp password, and Safe Space permission", () => {
     expect(
-      invitePayload({ email: "maya@school.org", canAccessSafeSpace: true }),
-    ).toEqual({ email: "maya@school.org", canAccessSafeSpace: true });
+      invitePayload({
+        name: "Maya Chen",
+        email: "maya@school.org",
+        temporaryPassword: "TempPass1!",
+        canAccessSafeSpace: true,
+        assignedClass: "class-1",
+      }),
+    ).toEqual({
+      name: "Maya Chen",
+      email: "maya@school.org",
+      temporaryPassword: "TempPass1!",
+      canAccessSafeSpace: true,
+      assignedClass: "class-1",
+    });
   });
 
-  it("requires a work email before inviting", () => {
+  it("requires a work email and temp password before inviting", () => {
     const result = inviteSchema.safeParse({
       name: "Maya Chen",
       email: "",
       assignedClass: "",
+      temporaryPassword: "short",
       canAccessSafeSpace: false,
     });
     expect(result.success).toBe(false);
     if (result.success) return;
-    expect(result.error.issues.map((issue) => issue.message)).toContain(
-      "Work email is required",
+    const messages = result.error.issues.map((issue) => issue.message);
+    expect(messages).toContain("Work email is required");
+    expect(messages).toContain(
+      "Temporary password must be at least 8 characters",
     );
   });
 

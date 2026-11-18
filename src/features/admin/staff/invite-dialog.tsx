@@ -1,7 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Mail, UserRound } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Eye, EyeOff, Lock, Mail, UserRound } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { applyApiFormError } from "@/components/feedback/apply-api-form-error";
 import { DialogActions } from "@/components/feedback/dialog-actions";
@@ -21,6 +23,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ApiError } from "@/lib/api/envelope";
+import { getClasses } from "@/features/admin/classes/api";
 import { inviteStaff } from "./api";
 import { invitePayload, inviteSchema, type InviteValues } from "./model";
 
@@ -33,12 +36,20 @@ export function InviteStaffDialog({
   onOpenChange: (open: boolean) => void;
   onInvited: (label: string) => void;
 }) {
+  const [showPassword, setShowPassword] = useState(false);
+  const classesQuery = useQuery({
+    queryKey: ["admin-classes-for-invite"],
+    queryFn: () => getClasses({ page: 1, perPage: 100 }),
+    enabled: open,
+  });
+
   const form = useForm<InviteValues>({
     resolver: zodResolver(inviteSchema),
     defaultValues: {
       name: "",
       email: "",
       assignedClass: "",
+      temporaryPassword: "",
       canAccessSafeSpace: false,
     },
   });
@@ -56,6 +67,8 @@ export function InviteStaffDialog({
       });
     }
   }
+
+  const classes = classesQuery.data?.items ?? [];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -107,14 +120,53 @@ export function InviteStaffDialog({
               name="assignedClass"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Assigned Class</FormLabel>
+                  <FormLabel>Assigned Class (optional)</FormLabel>
                   <FormControl>
                     <select
                       {...field}
                       className="h-9 w-full rounded-lg border bg-background px-3 text-sm"
                     >
                       <option value="">Select Class</option>
+                      {classes.map((item) => (
+                        <option key={item.id} value={item.id}>
+                          {item.name}
+                        </option>
+                      ))}
                     </select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="temporaryPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Set Temporary Password</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Lock className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        {...field}
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Enter Password"
+                        className="pr-10 pl-9"
+                        autoComplete="new-password"
+                      />
+                      <button
+                        type="button"
+                        className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground"
+                        onClick={() => setShowPassword((value) => !value)}
+                        aria-label={showPassword ? "Hide password" : "Show password"}
+                      >
+                        {showPassword ? (
+                          <EyeOff className="size-4" />
+                        ) : (
+                          <Eye className="size-4" />
+                        )}
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -2,9 +2,10 @@
 
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { cn } from "cn";
 
 export const authInputClass =
   "h-11 rounded-lg border border-input bg-white px-3 text-base text-foreground shadow-none placeholder:text-muted-foreground md:text-sm";
@@ -29,7 +30,7 @@ export function AuthHeading({
   subtitle,
 }: {
   title: string;
-  subtitle: string;
+  subtitle: ReactNode;
 }) {
   return (
     <div className="mb-8">
@@ -38,6 +39,79 @@ export function AuthHeading({
         {title}
       </h1>
       <p className="mt-2 text-sm text-muted-foreground">{subtitle}</p>
+    </div>
+  );
+}
+
+/** Six visible digit boxes (bordered) for email OTP / reset codes. */
+export function OtpCodeInput({
+  value,
+  onChange,
+  onBlur,
+  inputRef,
+  disabled = false,
+}: {
+  value: string;
+  onChange: (next: string) => void;
+  onBlur?: () => void;
+  inputRef?: (node: HTMLInputElement | null) => void;
+  disabled?: boolean;
+}) {
+  const cells = useRef<Array<HTMLInputElement | null>>([]);
+  const digits = Array.from({ length: 6 }, (_, i) => value[i] ?? "");
+
+  function setDigit(index: number, raw: string) {
+    const digit = raw.replace(/\D/g, "").slice(-1);
+    const next = Array.from({ length: 6 }, (_, slot) => digits[slot] ?? "");
+    next[index] = digit;
+    onChange(next.join(""));
+    if (digit && index < 5) cells.current[index + 1]?.focus();
+  }
+
+  return (
+    <div className="flex w-full justify-between gap-2 sm:gap-3">
+      {digits.map((digit, index) => (
+        <input
+          key={index}
+          ref={(node) => {
+            cells.current[index] = node;
+            if (index === 0) inputRef?.(node);
+          }}
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          autoComplete={index === 0 ? "one-time-code" : "off"}
+          aria-label={`Digit ${index + 1}`}
+          maxLength={1}
+          disabled={disabled}
+          placeholder="-"
+          value={digit}
+          onBlur={onBlur}
+          onChange={(event) => setDigit(index, event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Backspace" && !digits[index] && index > 0) {
+              cells.current[index - 1]?.focus();
+            }
+          }}
+          onFocus={(event) => event.currentTarget.select()}
+          onPaste={(event) => {
+            const text = event.clipboardData
+              .getData("text")
+              .replace(/\D/g, "")
+              .slice(0, 6);
+            if (!text) return;
+            event.preventDefault();
+            onChange(text);
+            cells.current[Math.min(text.length, 5)]?.focus();
+          }}
+          className={cn(
+            "h-12 w-10 shrink-0 rounded-xl border-2 border-[#D8DCE3] bg-white text-center text-lg font-semibold text-foreground shadow-none outline-none transition sm:h-14 sm:w-12",
+            "placeholder:text-[#C5CAD3] placeholder:font-medium",
+            "focus:border-primary focus:ring-2 focus:ring-primary/25",
+            "disabled:cursor-not-allowed disabled:opacity-60",
+          )}
+        />
+      ))}
     </div>
   );
 }
@@ -64,12 +138,14 @@ export function AuthFooter({
 export function AuthSubmit({
   children,
   pending,
+  disabled = false,
 }: {
   children: string;
   pending: boolean;
+  disabled?: boolean;
 }) {
   return (
-    <Button type="submit" className="h-11 w-full" disabled={pending}>
+    <Button type="submit" className="h-11 w-full" disabled={pending || disabled}>
       {children}
     </Button>
   );

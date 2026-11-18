@@ -46,12 +46,19 @@ export function staffStatusVariant(status: string): StatusBadgeVariant {
 }
 
 export function invitePayload(values: {
+  name: string;
   email: string;
+  temporaryPassword: string;
   canAccessSafeSpace: boolean;
+  assignedClass?: string;
 }) {
+  const assignedClass = values.assignedClass?.trim();
   return {
+    name: values.name.trim(),
     email: values.email.trim(),
+    temporaryPassword: values.temporaryPassword,
     canAccessSafeSpace: values.canAccessSafeSpace,
+    ...(assignedClass ? { assignedClass } : {}),
   };
 }
 
@@ -83,9 +90,12 @@ function emailField(emptyMessage: string) {
 }
 
 export const inviteSchema = z.object({
-  name: z.string(),
+  name: z.string().trim().min(1, "Full name is required"),
   email: emailField("Work email is required"),
   assignedClass: z.string(),
+  temporaryPassword: z
+    .string()
+    .min(8, "Temporary password must be at least 8 characters"),
   canAccessSafeSpace: z.boolean(),
 });
 
