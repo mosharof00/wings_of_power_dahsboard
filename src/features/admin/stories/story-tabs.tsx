@@ -5,7 +5,7 @@ export function StoryTabs({
   current = "library",
   storyCount,
 }: {
-  current?: "library" | "kindness";
+  current?: "library";
   storyCount?: number;
 }) {
   return (
@@ -27,14 +27,6 @@ export function StoryTabs({
           </span>
         ) : null}
       </Link>
-
-      <span
-        aria-disabled="true"
-        title="Kindness Corner (Coming soon in Task 021)"
-        className="-mb-px flex cursor-not-allowed items-center gap-2 border-b-2 border-transparent px-1 pb-2 text-sm text-muted-foreground/60"
-      >
-        Kindness Corner
-      </span>
     </nav>
   );
 }

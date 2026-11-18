@@ -9,14 +9,16 @@ export function Sidebar({
   role,
   pathname,
   onLogout,
+  onNavigate,
 }: {
   role: DashboardRole;
   pathname: string;
   onLogout: () => void;
+  onNavigate?: () => void;
 }) {
   return (
-    <aside className="flex h-screen w-[280px] shrink-0 flex-col bg-sidebar text-sidebar-foreground">
-      <div className="px-5 pt-6 pb-4">
+    <aside className="flex h-full w-[280px] shrink-0 flex-col bg-sidebar text-sidebar-foreground">
+      <div className="shrink-0 px-5 pt-6 pb-4">
         <p className="text-sm leading-tight font-semibold text-white">
           Wings of <span className="text-primary">Power</span>
         </p>
@@ -24,8 +26,8 @@ export function Sidebar({
           Faith & Gabriel Against Bullying
         </p>
       </div>
-      <Separator className="bg-white/15" />
-      <nav className="flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-4">
+      <Separator className="shrink-0 bg-white/15" />
+      <nav className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-3 py-4">
         {navForRole(role).map((item) => {
           const painted =
             "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-sidebar-foreground";
@@ -42,6 +44,7 @@ export function Sidebar({
             <Link
               key={item.href}
               href={item.href}
+              onClick={onNavigate}
               aria-current={active ? "page" : undefined}
               className={
                 active
@@ -55,7 +58,7 @@ export function Sidebar({
           );
         })}
       </nav>
-      <div className="p-4">
+      <div className="shrink-0 p-4">
         <Button
           type="button"
           variant="outline"

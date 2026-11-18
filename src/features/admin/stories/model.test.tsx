@@ -137,12 +137,11 @@ describe("story schema validation", () => {
 });
 
 describe("story static components", () => {
-  it("renders StoryTabs with active library and disabled Kindness Corner", () => {
+  it("renders StoryTabs with active library only (Kindness Corner deferred)", () => {
     const markup = renderToStaticMarkup(<StoryTabs current="library" storyCount={4} />);
     expect(markup).toContain("Storie Library");
     expect(markup).toContain("4");
-    expect(markup).toContain("Kindness Corner");
-    expect(markup).toContain('aria-disabled="true"');
+    expect(markup).not.toContain("Kindness Corner");
   });
 
   it("renders StoriesChrome with title, subtitle and create button link", () => {

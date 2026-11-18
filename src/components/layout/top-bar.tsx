@@ -1,4 +1,4 @@
-import { Bell, Search } from "lucide-react";
+import { Bell, Menu, Search } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { studentsListPath, type DashboardRole } from "./nav";
@@ -8,22 +8,38 @@ export function TopBar({
   role,
   displayName,
   initial,
+  onOpenNav,
 }: {
   title: string;
   role: DashboardRole;
   displayName: string;
   initial: string;
+  onOpenNav?: () => void;
 }) {
   return (
-    <header className="flex items-center gap-4 rounded-2xl bg-card px-5 py-3">
-      <h1 className="text-lg font-semibold text-primary">{title}</h1>
+    <header className="flex items-center gap-2 rounded-2xl bg-card px-3 py-2.5 sm:gap-4 sm:px-5 sm:py-3">
+      {onOpenNav ? (
+        <button
+          type="button"
+          aria-label="Open navigation"
+          onClick={onOpenNav}
+          className="inline-flex size-10 shrink-0 items-center justify-center rounded-full text-foreground hover:bg-muted lg:hidden"
+        >
+          <Menu className="size-5" aria-hidden="true" />
+        </button>
+      ) : null}
+
+      <h1 className="min-w-0 truncate text-base font-semibold text-primary sm:text-lg">
+        {title}
+      </h1>
+
       <form
         action={studentsListPath(role)}
         method="get"
         role="search"
-        className="ml-auto"
+        className="ml-auto hidden sm:block"
       >
-        <div className="relative w-72">
+        <div className="relative w-48 md:w-72">
           <button
             type="submit"
             aria-label="Search"
@@ -40,23 +56,25 @@ export function TopBar({
           />
         </div>
       </form>
+
       <button
         type="button"
         aria-label="Notifications"
-        className="relative inline-flex size-10 items-center justify-center rounded-full text-foreground"
+        className="relative inline-flex size-10 shrink-0 items-center justify-center rounded-full text-foreground"
       >
         <Bell className="size-5" aria-hidden="true" />
         <span className="absolute top-1 right-1 inline-flex min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] leading-4 font-medium text-primary-foreground">
           3
         </span>
       </button>
-      <div className="flex items-center gap-2">
-        <Avatar className="size-9 after:border-0">
+
+      <div className="flex min-w-0 items-center gap-2">
+        <Avatar className="size-9 shrink-0 after:border-0">
           <AvatarFallback className="bg-primary text-sm font-medium text-primary-foreground">
             {initial}
           </AvatarFallback>
         </Avatar>
-        <span className="text-sm font-medium text-foreground">
+        <span className="hidden max-w-[10rem] truncate text-sm font-medium text-foreground md:inline">
           {displayName}
         </span>
       </div>

@@ -40,6 +40,7 @@ import {
   updateStory,
 } from "./api";
 import { FileUploadDropzone } from "./file-upload-dropzone";
+import { PageHtmlEditor, stripHtml } from "./page-html-editor";
 import {
   AGE_GROUPS,
   buildCreateStoryPayload,
@@ -326,10 +327,9 @@ function StoryEditorForm({
   }
 
   return (
-    <div className="grid gap-6">
-      {/* Breadcrumb & Header */}
-      <div>
-        <nav aria-label="Breadcrumb" className="mb-2 flex items-center gap-1.5 text-xs text-muted-foreground">
+    <div className="-mx-3 flex min-h-[calc(100svh-7.5rem)] flex-col sm:-mx-4 md:-mx-6">
+      <div className="shrink-0 space-y-4 px-3 sm:px-4 md:px-6">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <Link href="/admin/stories" className="hover:text-foreground">
             Stories
           </Link>
@@ -339,27 +339,26 @@ function StoryEditorForm({
           </span>
         </nav>
 
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-3">
-              <h2 className="text-2xl font-semibold">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-3">
+              <h2 className="text-xl font-semibold sm:text-2xl">
                 {mode === "create" ? "Create New Storie" : title || "Edit Storie"}
               </h2>
               {story ? (
                 <StatusBadge variant={storyStatusVariant(story.status)} />
               ) : null}
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="mt-1 text-sm text-muted-foreground">
               Configure storie details, cover illustration, and ordered chapters for Reading &amp; Listening modes.
             </p>
           </div>
 
-          {/* Stepper Navigation */}
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <button
               type="button"
               onClick={() => setActiveStep("details")}
-              className={`flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
+              className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors sm:px-4 ${
                 activeStep === "details"
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border bg-background text-muted-foreground hover:bg-muted"
@@ -375,7 +374,7 @@ function StoryEditorForm({
               type="button"
               disabled={mode === "create" && !story}
               onClick={() => setActiveStep("curriculum")}
-              className={`flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
+              className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-medium transition-colors sm:px-4 ${
                 activeStep === "curriculum"
                   ? "border-primary bg-primary text-primary-foreground"
                   : mode === "create" && !story
@@ -394,8 +393,9 @@ function StoryEditorForm({
 
       {/* STEP 1: Details */}
       {activeStep === "details" ? (
-        <form onSubmit={handleSaveDetails} className="space-y-6">
-          <div className="rounded-xl border bg-card p-6 shadow-sm">
+        <form onSubmit={handleSaveDetails} className="mt-4 flex min-h-0 flex-1 flex-col">
+          <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-4 sm:px-4 md:px-6">
+          <div className="rounded-xl border bg-card p-4 shadow-sm sm:p-6">
             <h3 className="mb-4 text-lg font-semibold">Storie Information</h3>
 
             <div className="grid gap-4 sm:grid-cols-2">
@@ -489,9 +489,9 @@ function StoryEditorForm({
               </div>
             </div>
           </div>
+          </div>
 
-          {/* Action Bar */}
-          <div className="flex items-center justify-between gap-3">
+          <div className="sticky bottom-0 z-10 flex flex-wrap items-center justify-between gap-3 border-t bg-background/95 px-3 py-3 backdrop-blur sm:px-4 md:px-6">
             <Link
               href="/admin/stories"
               className={cn(buttonVariants({ variant: "outline" }))}
@@ -506,7 +506,12 @@ function StoryEditorForm({
               ) : (
                 <Save className="size-4" />
               )}
-              {mode === "create" ? "Save & Continue to Curriculum" : "Save Changes"}
+              <span className="hidden sm:inline">
+                {mode === "create" ? "Save & Continue to Curriculum" : "Save Changes"}
+              </span>
+              <span className="sm:hidden">
+                {mode === "create" ? "Save & Continue" : "Save"}
+              </span>
             </Button>
           </div>
         </form>
@@ -514,12 +519,13 @@ function StoryEditorForm({
 
       {/* STEP 2: Curriculum */}
       {activeStep === "curriculum" && id ? (
-        <div className="space-y-6">
-          <div className="grid gap-6 lg:grid-cols-12">
+        <div className="mt-4 flex min-h-0 flex-1 flex-col">
+          <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-4 sm:px-4 md:px-6">
+          <div className="grid gap-4 xl:grid-cols-12 xl:gap-6">
             {/* Left Column: Chapters & Pages list */}
-            <div className="space-y-4 lg:col-span-4">
+            <div className="space-y-4 xl:col-span-4">
               <div className="rounded-xl border bg-card p-4 shadow-sm">
-                <div className="mb-4 flex items-center justify-between">
+                <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
                   <h3 className="font-semibold text-foreground">Curriculum</h3>
                   <Button
                     size="sm"
@@ -608,7 +614,9 @@ function StoryEditorForm({
                                         Page {p.number < 10 ? `0${p.number}` : p.number}
                                       </span>
                                       <span className="truncate opacity-80">
-                                        {p.bodyText ? `— ${p.bodyText}` : ""}
+                                        {p.bodyText
+                                          ? `— ${stripHtml(p.bodyText)}`
+                                          : ""}
                                       </span>
                                     </div>
 
@@ -650,7 +658,7 @@ function StoryEditorForm({
             </div>
 
             {/* Middle Column: Page Content Details Panel */}
-            <div className="space-y-4 lg:col-span-5">
+            <div className="space-y-4 xl:col-span-5">
               <PageEditorPanel
                 key={`${activeChapter?.id ?? "none"}-${activePage?.number ?? selectedPageNumber}`}
                 storyId={id}
@@ -661,7 +669,7 @@ function StoryEditorForm({
             </div>
 
             {/* Right Column: Chapter Audio Panel */}
-            <div className="space-y-4 lg:col-span-3">
+            <div className="space-y-4 xl:col-span-3">
               <ChapterAudioPanel
                 key={activeChapter?.id ?? "none"}
                 storyId={id}
@@ -669,19 +677,20 @@ function StoryEditorForm({
               />
             </div>
           </div>
+          </div>
 
-          {/* Bottom Actions Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-4">
+          <div className="sticky bottom-0 z-10 flex flex-wrap items-center justify-between gap-3 border-t bg-background/95 px-3 py-3 backdrop-blur sm:px-4 md:px-6">
             <Button
               type="button"
               variant="outline"
               onClick={() => setActiveStep("details")}
             >
               <ArrowLeft className="size-4" />
-              Back to Details
+              <span className="hidden sm:inline">Back to Details</span>
+              <span className="sm:hidden">Back</span>
             </Button>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <Button
                 type="button"
                 variant="outline"
@@ -796,12 +805,14 @@ function PageEditorPanel({
     let updatedPages: { number: number; bodyText?: string; imageUrl?: string }[];
 
     const exists = currentPages.some((p) => p.number === pageNumber);
+    const nextBody = stripHtml(pageBodyText) ? pageBodyText : undefined;
+
     if (exists) {
       updatedPages = currentPages.map((p) => {
         if (p.number === pageNumber) {
           return {
             number: p.number,
-            bodyText: pageBodyText.trim() || undefined,
+            bodyText: nextBody,
             imageUrl: pageImageUrl || undefined,
           };
         }
@@ -820,7 +831,7 @@ function PageEditorPanel({
         })),
         {
           number: pageNumber,
-          bodyText: pageBodyText.trim() || undefined,
+          bodyText: nextBody,
           imageUrl: pageImageUrl || undefined,
         },
       ];
@@ -880,13 +891,11 @@ function PageEditorPanel({
 
           <div className="space-y-1.5">
             <Label htmlFor="pageText">Page Text</Label>
-            <textarea
+            <PageHtmlEditor
               id="pageText"
-              rows={8}
-              placeholder="Write the page text here..."
               value={pageBodyText}
-              onChange={(e) => setPageBodyText(e.target.value)}
-              className="flex min-h-[160px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-xs placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              onChange={setPageBodyText}
+              placeholder="Write the page text here. Use the toolbar for color, size, and emphasis."
             />
           </div>
         </div>
