@@ -56,17 +56,10 @@ export const FALLBACK_PUBLISHED_STORIES: TeacherStory[] = [
 ];
 
 export async function getTeacherStories(): Promise<TeacherStory[]> {
-  try {
-    const raw = await callApi<unknown>(() =>
-      asCall(client().GET("/teacher/stories")),
-    );
-    const stories = normalizeTeacherStories(raw);
-    if (stories.length > 0) return stories;
-    return FALLBACK_PUBLISHED_STORIES;
-  } catch {
-    // If backend endpoint is not yet deployed, fallback gracefully
-    return FALLBACK_PUBLISHED_STORIES;
-  }
+  const raw = await callApi<unknown>(() =>
+    asCall(client().GET("/teacher/stories")),
+  );
+  return normalizeTeacherStories(raw);
 }
 
 export async function getChapterQuiz(chapterId: string): Promise<ChapterQuiz> {

@@ -2,7 +2,6 @@ import { api, callApi } from "@/lib/api/client";
 import type { Envelope, Page } from "@/lib/api/envelope";
 import {
   DEFAULT_ELIGIBILITY,
-  loadLocalEligibility,
   SAMPLE_MATCH_1V1,
   SAMPLE_MATCH_5V5,
   SAMPLE_MATCHES,
@@ -49,87 +48,62 @@ type BackendEligibilityResponse = {
 };
 
 export async function getEligibilityConfig(): Promise<EligibilityConfig> {
-  try {
-    const res = await callApi<BackendEligibilityResponse>(() =>
-      asCall(client().GET("/admin/game/eligibility-config")),
-    );
-    if (res) {
-      const config: EligibilityConfig = {
-        schoolId: res.schoolId,
-        requiredStories:
-          res.requiredStories ??
-          res.required_stories ??
-          DEFAULT_ELIGIBILITY.requiredStories,
-        requiredChapters:
-          res.requiredChapters ??
-          res.required_chapters ??
-          DEFAULT_ELIGIBILITY.requiredChapters,
-        minQuizPercent:
-          res.minQuizPercent ??
-          res.min_quiz_percent ??
-          DEFAULT_ELIGIBILITY.minQuizPercent,
-        updatedAt: res.updatedAt,
-      };
-      saveLocalEligibility(config);
-      return config;
-    }
-  } catch {
-    // API not yet reachable or offline
-  }
-  return loadLocalEligibility();
+  const res = await callApi<BackendEligibilityResponse>(() =>
+    asCall(client().GET("/admin/game/eligibility-config")),
+  );
+  const config: EligibilityConfig = {
+    schoolId: res?.schoolId,
+    requiredStories:
+      res?.requiredStories ??
+      res?.required_stories ??
+      DEFAULT_ELIGIBILITY.requiredStories,
+    requiredChapters:
+      res?.requiredChapters ??
+      res?.required_chapters ??
+      DEFAULT_ELIGIBILITY.requiredChapters,
+    minQuizPercent:
+      res?.minQuizPercent ??
+      res?.min_quiz_percent ??
+      DEFAULT_ELIGIBILITY.minQuizPercent,
+    updatedAt: res?.updatedAt,
+  };
+  saveLocalEligibility(config);
+  return config;
 }
 
 export async function updateEligibilityConfig(
   input: UpdateEligibilityInput,
 ): Promise<EligibilityConfig> {
-  const nextConfig: EligibilityConfig = {
-    requiredStories: input.requiredStories,
-    requiredChapters: input.requiredChapters,
-    minQuizPercent: input.minQuizPercent,
-    updatedAt: new Date().toISOString(),
+  const res = await callApi<BackendEligibilityResponse>(() =>
+    asCall(
+      client().PATCH("/admin/game/eligibility-config", {
+        body: {
+          required_stories: input.requiredStories,
+          required_chapters: input.requiredChapters,
+          min_quiz_percent: input.minQuizPercent,
+          requiredStories: input.requiredStories,
+          requiredChapters: input.requiredChapters,
+          minQuizPercent: input.minQuizPercent,
+        },
+      }),
+    ),
+  );
+  const updated: EligibilityConfig = {
+    schoolId: res?.schoolId,
+    requiredStories:
+      res?.requiredStories ??
+      res?.required_stories ??
+      input.requiredStories,
+    requiredChapters:
+      res?.requiredChapters ??
+      res?.required_chapters ??
+      input.requiredChapters,
+    minQuizPercent:
+      res?.minQuizPercent ?? res?.min_quiz_percent ?? input.minQuizPercent,
+    updatedAt: res?.updatedAt ?? new Date().toISOString(),
   };
-  saveLocalEligibility(nextConfig);
-
-  try {
-    const res = await callApi<BackendEligibilityResponse>(() =>
-      asCall(
-        client().PATCH("/admin/game/eligibility-config", {
-          body: {
-            required_stories: input.requiredStories,
-            required_chapters: input.requiredChapters,
-            min_quiz_percent: input.minQuizPercent,
-            requiredStories: input.requiredStories,
-            requiredChapters: input.requiredChapters,
-            minQuizPercent: input.minQuizPercent,
-          },
-        }),
-      ),
-    );
-    if (res) {
-      const updated: EligibilityConfig = {
-        schoolId: res.schoolId,
-        requiredStories:
-          res.requiredStories ??
-          res.required_stories ??
-          nextConfig.requiredStories,
-        requiredChapters:
-          res.requiredChapters ??
-          res.required_chapters ??
-          nextConfig.requiredChapters,
-        minQuizPercent:
-          res.minQuizPercent ??
-          res.min_quiz_percent ??
-          nextConfig.minQuizPercent,
-        updatedAt: res.updatedAt,
-      };
-      saveLocalEligibility(updated);
-      return updated;
-    }
-  } catch {
-    // Fall back to saved local config
-  }
-
-  return nextConfig;
+  saveLocalEligibility(updated);
+  return updated;
 }
 
 export async function getMatches(query?: {

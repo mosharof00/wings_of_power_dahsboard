@@ -206,12 +206,13 @@ export function ThemesView() {
           if (!open) setEditing(null);
         }}
         theme={editing}
-        onSaved={async () => {
+        onSaved={async (_saved, mode) => {
           toastSuccess({
-            title: editing ? "Theme updated" : "Theme created",
-            description: editing
-              ? "Theme details were saved."
-              : "Theme is ready to assign to stories.",
+            title: mode === "edit" ? "Theme updated" : "Theme created",
+            description:
+              mode === "edit"
+                ? "Theme details were saved."
+                : "Theme is ready to assign to stories.",
           });
           await queryClient.invalidateQueries({ queryKey: ["admin-themes"] });
           await queryClient.invalidateQueries({ queryKey: ["active-themes"] });

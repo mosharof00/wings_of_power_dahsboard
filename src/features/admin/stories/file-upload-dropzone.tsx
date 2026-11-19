@@ -91,7 +91,7 @@ export function FileUploadDropzone({
   }
 
   return (
-    <div className="space-y-2">
+    <div className="min-w-0 space-y-2 overflow-hidden">
       <span className="text-sm font-medium">{label}</span>
       <input
         ref={fileInputRef}
@@ -105,8 +105,8 @@ export function FileUploadDropzone({
       />
 
       {currentUrl ? (
-        <div className="space-y-3 rounded-xl border bg-muted/30 p-3">
-          <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0 space-y-3 overflow-hidden rounded-xl border bg-muted/30 p-3">
+          <div className="flex min-w-0 items-start gap-3">
             <div className="flex min-w-0 flex-1 items-start gap-3">
               {isAudio ? (
                 <div className="flex size-14 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
@@ -131,14 +131,19 @@ export function FileUploadDropzone({
                   </span>
                 </button>
               )}
-              <div className="min-w-0 flex-1 space-y-1">
+              <div className="min-w-0 flex-1 space-y-1 overflow-hidden">
                 <div className="flex items-center gap-1.5 text-sm font-medium text-foreground">
                   <CheckCircle2 className="size-4 shrink-0 text-success" />
                   <span className="truncate">
                     {isAudio ? "Audio file uploaded" : "Image uploaded"}
                   </span>
                 </div>
-                <p className="truncate text-xs text-muted-foreground">{currentUrl}</p>
+                <p
+                  className="truncate text-xs text-muted-foreground"
+                  title={currentUrl}
+                >
+                  {currentUrl.split("/").pop() || currentUrl}
+                </p>
                 {!isAudio ? (
                   <button
                     type="button"
@@ -150,7 +155,7 @@ export function FileUploadDropzone({
                 ) : null}
               </div>
             </div>
-            <div className="flex items-center gap-1">
+            <div className="flex shrink-0 items-center gap-1">
               <Button
                 type="button"
                 variant="outline"

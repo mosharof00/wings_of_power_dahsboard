@@ -40,11 +40,23 @@ export function buildCreateThemePayload(values: CreateThemeValues) {
 }
 
 export function buildUpdateThemePayload(values: UpdateThemeValues) {
-  return {
+  const payload: {
+    name: string;
+    slug?: string;
+    coverUrl?: string | null;
+    sortOrder?: number;
+    isActive?: boolean;
+  } = {
     name: values.name.trim(),
     slug: values.slug?.trim() || undefined,
-    coverUrl: values.coverUrl || undefined,
     sortOrder: values.sortOrder ?? undefined,
-    isActive: values.isActive,
   };
+  // Always send coverUrl on edit so clearing cover persists (null).
+  if (values.coverUrl !== undefined) {
+    payload.coverUrl = values.coverUrl;
+  }
+  if (values.isActive !== undefined) {
+    payload.isActive = values.isActive;
+  }
+  return payload;
 }
