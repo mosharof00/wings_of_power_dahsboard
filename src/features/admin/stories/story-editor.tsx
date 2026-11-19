@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ApiError } from "@/lib/api/envelope";
+import { ApiError, normalizeApiMessage } from "@/lib/api/envelope";
 import { cn } from "@/lib/utils";
 import {
   addChapter,
@@ -41,12 +41,12 @@ import {
 } from "./api";
 import { FileUploadDropzone } from "./file-upload-dropzone";
 import { PageHtmlEditor, stripHtml } from "./page-html-editor";
+import { getActiveThemes } from "@/features/admin/themes/api";
 import {
   AGE_GROUPS,
   buildCreateStoryPayload,
   createChapterSchema,
   createStorySchema,
-  STORY_CATEGORIES,
   storyStatusVariant,
   toApiAgeGroup,
   type CreateStoryValues,
@@ -117,7 +117,13 @@ function StoryEditorForm({
   // Step 1: Form state initialized from initialStory
   const [title, setTitle] = useState(story?.title ?? "");
   const [author, setAuthor] = useState(story?.author ?? "");
-  const [category, setCategory] = useState(story?.category ?? "KINDNESS");
+  const [themeId, setThemeId] = useState(story?.themeId ?? "");
+
+  const themesQuery = useQuery({
+    queryKey: ["active-themes"],
+    queryFn: getActiveThemes,
+    retry: false,
+  });
 
   function parseInitialAgeGroup(age?: string): "6-9" | "10-13" | "adults" {
     if (age === "AGE_10_13" || age === "10-13") return "10-13";
@@ -159,7 +165,7 @@ function StoryEditorForm({
     const parseResult = createStorySchema.safeParse({
       title,
       author,
-      category,
+      themeId,
       ageGroup,
       estimatedMinutes: estimatedMinutes === "" ? null : Number(estimatedMinutes),
       synopsis,
@@ -187,7 +193,7 @@ function StoryEditorForm({
         await updateStory(id, {
           title: title.trim(),
           author: author.trim() || undefined,
-          category,
+          themeId,
           ageGroup: toApiAgeGroup(ageGroup),
           estimatedMinutes: estimatedMinutes === "" ? undefined : Number(estimatedMinutes),
           synopsis: synopsis.trim() || undefined,
@@ -203,7 +209,9 @@ function StoryEditorForm({
       }
     } catch (error) {
       toast.error(
-        error instanceof ApiError ? error.message : "Failed to save story details.",
+        error instanceof ApiError
+          ? normalizeApiMessage(error.message, "Failed to save story details.")
+          : "Failed to save story details.",
       );
     } finally {
       setDetailsSaving(false);
@@ -421,19 +429,28 @@ function StoryEditorForm({
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="category">Category</Label>
+                <Label htmlFor="themeId">Theme</Label>
                 <select
-                  id="category"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
+                  id="themeId"
+                  value={themeId}
+                  onChange={(e) => setThemeId(e.target.value)}
                   className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-xs"
+                  required
                 >
-                  {STORY_CATEGORIES.map((cat) => (
-                    <option key={cat.value} value={cat.value}>
-                      {cat.label}
+                  <option value="" disabled>
+                    {themesQuery.isLoading ? "Loading themes…" : "Select a theme"}
+                  </option>
+                  {(themesQuery.data ?? []).map((theme) => (
+                    <option key={theme.id} value={theme.id}>
+                      {theme.name}
                     </option>
                   ))}
                 </select>
+                {(themesQuery.data?.length ?? 0) === 0 && !themesQuery.isLoading ? (
+                  <p className="text-xs text-muted-foreground">
+                    No active themes. Add one under Themes first.
+                  </p>
+                ) : null}
               </div>
 
               <div className="space-y-1.5">

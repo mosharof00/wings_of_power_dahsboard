@@ -1,6 +1,6 @@
 export type Envelope<T> = {
   success: boolean;
-  message?: string;
+  message?: string | string[] | { message?: string | string[] };
   data?: T;
 };
 
@@ -31,9 +31,29 @@ function isEnvelope(body: unknown): body is Envelope<unknown> {
   );
 }
 
+/** Nest sometimes nests `{ message, statusCode }` inside envelope.message. */
+export function normalizeApiMessage(message: unknown, fallback = "Request failed"): string {
+  if (typeof message === "string" && message.trim()) {
+    return message === "[object Object]" ? fallback : message;
+  }
+  if (Array.isArray(message) && message.length > 0) {
+    return message.map((part) => normalizeApiMessage(part, "")).filter(Boolean).join("; ") || fallback;
+  }
+  if (message && typeof message === "object") {
+    const nested = message as { message?: unknown; error?: unknown };
+    if (nested.message !== undefined) {
+      return normalizeApiMessage(nested.message, fallback);
+    }
+    if (typeof nested.error === "string" && nested.error.trim()) {
+      return nested.error;
+    }
+  }
+  return fallback;
+}
+
 export function unwrapEnvelope<T>(body: unknown, status: number): T {
   const envelope = isEnvelope(body) ? body : null;
-  const message = envelope?.message ?? "Request failed";
+  const message = normalizeApiMessage(envelope?.message, "Request failed");
   if (
     status === 400 ||
     status === 401 ||

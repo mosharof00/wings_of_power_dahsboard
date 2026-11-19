@@ -24,6 +24,35 @@ describe("unwrapEnvelope", () => {
     }
   });
 
+  it("flattens nested Nest getResponse() message objects", () => {
+    try {
+      unwrapEnvelope(
+        {
+          success: false,
+          message: { message: "Unauthorized", statusCode: 401 },
+        },
+        401,
+      );
+      throw new Error("expected throw");
+    } catch (error) {
+      expect(error).toBeInstanceOf(ApiError);
+      expect((error as ApiError).message).toBe("Unauthorized");
+    }
+  });
+
+  it("joins validation message arrays", () => {
+    try {
+      unwrapEnvelope(
+        { success: false, message: ["title should not be empty", "category must be a valid enum"] },
+        400,
+      );
+      throw new Error("expected throw");
+    } catch (error) {
+      expect((error as ApiError).message).toContain("title should not be empty");
+      expect((error as ApiError).message).toContain("category must be a valid enum");
+    }
+  });
+
   it("reads a paginated list", () => {
     expect(
       unwrapPage<string>(

@@ -11,15 +11,6 @@ export const AGE_GROUPS = [
   { value: "adults", label: "Adults", apiValue: "ADULTS" },
 ] as const;
 
-export const STORY_CATEGORIES = [
-  { value: "KINDNESS", label: "Kindness" },
-  { value: "BULLYING", label: "Bullying Prevention" },
-  { value: "EMPATHY", label: "Empathy" },
-  { value: "FRIENDSHIP", label: "Friendship" },
-  { value: "RESPECT", label: "Respect" },
-  { value: "COURAGE", label: "Courage" },
-] as const;
-
 export const STATUS_OPTIONS = [
   { value: "PUBLISHED", label: "Published" },
   { value: "DRAFT", label: "Draft" },
@@ -36,6 +27,7 @@ export type StoryListItem = {
   ageGroup: string;
   status: PublishStatus;
   updatedAt: string;
+  themeId?: string;
   category?: string;
   synopsis?: string | null;
   estimatedMinutes?: number | null;
@@ -72,7 +64,7 @@ export type StoryDetail = StoryListItem & {
 export const createStorySchema = z.object({
   title: z.string().trim().min(1, "Title is required"),
   author: z.string().trim().optional(),
-  category: z.string().min(1, "Select a category"),
+  themeId: z.string().min(1, "Select a theme"),
   ageGroup: z.enum(["6-9", "10-13", "adults"], {
     error: "Select an age group",
   }),
@@ -150,7 +142,7 @@ export function buildCreateStoryPayload(values: CreateStoryValues) {
     title: values.title.trim(),
     synopsis: values.synopsis?.trim() || undefined,
     coverUrl: values.coverUrl || undefined,
-    category: values.category,
+    themeId: values.themeId,
     ageGroup: toApiAgeGroup(values.ageGroup),
     estimatedMinutes: values.estimatedMinutes ?? undefined,
     author: values.author?.trim() || undefined,

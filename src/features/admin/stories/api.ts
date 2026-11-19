@@ -61,7 +61,7 @@ export function getStory(id: string) {
 
 export function createStory(body: {
   title: string;
-  category: string;
+  themeId: string;
   ageGroup: string;
   synopsis?: string;
   coverUrl?: string;
@@ -77,7 +77,7 @@ export function updateStory(
   id: string,
   body: {
     title?: string;
-    category?: string;
+    themeId?: string;
     ageGroup?: string;
     status?: "PUBLISHED" | "DRAFT" | "ARCHIVED";
     synopsis?: string;
@@ -130,6 +130,7 @@ export type UploadPurpose =
   | "CHAPTER_AUDIO"
   | "BADGE_ART"
   | "HERO_ART"
+  | "THEME_COVER"
   | "KINDNESS_MEDIA";
 
 export type UploadResult = {

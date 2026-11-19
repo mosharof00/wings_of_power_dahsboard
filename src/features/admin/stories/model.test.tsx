@@ -83,7 +83,7 @@ describe("story query & payload builders", () => {
     const payload = buildCreateStoryPayload({
       title: "  The Golden Pearl Book 1  ",
       author: "  Audrey Cuff  ",
-      category: "KINDNESS",
+      themeId: "theme_kindness",
       ageGroup: "10-13",
       estimatedMinutes: 20,
       synopsis: "  A heartwarming tale.  ",
@@ -92,7 +92,7 @@ describe("story query & payload builders", () => {
     expect(payload).toEqual({
       title: "The Golden Pearl Book 1",
       author: "Audrey Cuff",
-      category: "KINDNESS",
+      themeId: "theme_kindness",
       ageGroup: "AGE_10_13",
       estimatedMinutes: 20,
       synopsis: "A heartwarming tale.",
@@ -105,7 +105,7 @@ describe("story schema validation", () => {
   it("validates createStorySchema successfully", () => {
     const valid = createStorySchema.safeParse({
       title: "City of Thieves",
-      category: "COURAGE",
+      themeId: "theme_courage",
       ageGroup: "10-13",
       estimatedMinutes: 15,
     });
@@ -115,7 +115,7 @@ describe("story schema validation", () => {
   it("rejects invalid age groups", () => {
     const invalid = createStorySchema.safeParse({
       title: "Story",
-      category: "KINDNESS",
+      themeId: "theme_kindness",
       ageGroup: "invalid-age",
     });
     expect(invalid.success).toBe(false);
@@ -124,7 +124,7 @@ describe("story schema validation", () => {
   it("rejects empty title", () => {
     const invalid = createStorySchema.safeParse({
       title: "   ",
-      category: "KINDNESS",
+      themeId: "theme_kindness",
       ageGroup: "6-9",
     });
     expect(invalid.success).toBe(false);

@@ -5,6 +5,7 @@ export type NavIcon =
   | "users"
   | "classes"
   | "stories"
+  | "themes"
   | "badges"
   | "game"
   | "reports"
@@ -45,6 +46,12 @@ export const adminNav: NavItem[] = [
     title: "Storie",
     href: "/admin/stories",
     icon: "stories",
+  },
+  {
+    label: "Themes",
+    title: "Themes",
+    href: "/admin/themes",
+    icon: "themes",
   },
   {
     label: "Badges & Points",
