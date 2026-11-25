@@ -272,7 +272,7 @@ function OverviewTab({
             </span>
             <div>
               <p className="text-xs font-medium text-muted-foreground">Avg. quiz score</p>
-              <p className="text-2xl font-bold text-foreground">{cls.avgQuizScore}%</p>
+              <p className="text-2xl font-bold text-foreground">{cls.avgQuizScore === null ? "—" : `${cls.avgQuizScore}%`}</p>
             </div>
           </div>
           <p className="mt-2 text-xs text-muted-foreground">Average score achieved by students.</p>
@@ -285,6 +285,7 @@ function OverviewTab({
         <div className="rounded-2xl border bg-card p-5">
           <h3 className="font-semibold text-foreground">Story completion</h3>
           <div className="mt-4 grid gap-4">
+            {cls.stories.length === 0 && <p className="text-sm text-muted-foreground">No stories started yet.</p>}
             {cls.stories.map((story) => (
               <div key={story.id} className="rounded-xl bg-muted/40 p-4">
                 <div className="flex items-center justify-between text-sm">
@@ -306,93 +307,23 @@ function OverviewTab({
         <div className="flex flex-col justify-between rounded-2xl border bg-card p-5">
           <h3 className="font-semibold text-foreground">Class progress</h3>
           <div className="my-auto flex flex-col items-center justify-center py-6">
-            {/* Multi-arc radial gauge */}
             <div className="relative flex size-44 items-center justify-center">
-              <svg className="size-full -rotate-90 transform" viewBox="0 0 100 100">
-                {/* Outer Track & Arc (Orange) */}
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="42"
-                  className="stroke-orange-100 dark:stroke-orange-950/30"
-                  strokeWidth="6"
-                  fill="transparent"
-                />
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="42"
-                  className="stroke-primary"
-                  strokeWidth="6"
-                  strokeDasharray="264"
-                  strokeDashoffset={264 - (264 * 0.92)}
-                  strokeLinecap="round"
-                  fill="transparent"
-                />
-                {/* Middle Track & Arc (Sky Blue) */}
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="34"
-                  className="stroke-sky-100 dark:stroke-sky-950/30"
-                  strokeWidth="6"
-                  fill="transparent"
-                />
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="34"
-                  className="stroke-sky-400"
-                  strokeWidth="6"
-                  strokeDasharray="213"
-                  strokeDashoffset={213 - (213 * 0.85)}
-                  strokeLinecap="round"
-                  fill="transparent"
-                />
-                {/* Inner Track & Arc (Purple) */}
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="26"
-                  className="stroke-purple-100 dark:stroke-purple-950/30"
-                  strokeWidth="6"
-                  fill="transparent"
-                />
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="26"
-                  className="stroke-purple-500"
-                  strokeWidth="6"
-                  strokeDasharray="163"
-                  strokeDashoffset={163 - (163 * 0.75)}
-                  strokeLinecap="round"
-                  fill="transparent"
-                />
+              <svg aria-hidden="true" className="size-full -rotate-90" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="42" className="stroke-orange-100 dark:stroke-orange-950/30" strokeWidth="6" fill="none" />
+                {cls.readingProgressPercent !== null && cls.readingProgressPercent > 0 && (
+                  <circle
+                    cx="50" cy="50" r="42" pathLength="100"
+                    className="stroke-primary" strokeWidth="6" fill="none"
+                    strokeDasharray={String(cls.readingProgressPercent) + " 100"}
+                    strokeLinecap="round"
+                  />
+                )}
               </svg>
-              <div className="absolute flex flex-col items-center justify-center text-center">
+              <div className="absolute flex flex-col items-center text-center">
                 <span className="text-2xl font-bold text-foreground">
-                  {cls.readingProgressPercent}%
+                  {cls.readingProgressPercent === null ? "—" : `${cls.readingProgressPercent}%`}
                 </span>
-                <span className="text-[10px] leading-tight text-muted-foreground">
-                  average across<br />students
-                </span>
-              </div>
-            </div>
-
-            {/* Legend */}
-            <div className="mt-4 flex flex-col gap-1.5 text-xs text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <span className="size-2.5 rounded-full bg-purple-500" />
-                <span>The Lantern Keeper of Marrow Bay</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="size-2.5 rounded-full bg-sky-400" />
-                <span>Why the River Sings</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="size-2.5 rounded-full bg-amber-400" />
-                <span>The Seed Under the Staircase</span>
+                <span className="text-xs text-muted-foreground">Chapters completed</span>
               </div>
             </div>
           </div>
@@ -562,6 +493,7 @@ function ProgressTab({
       <div className="rounded-2xl border bg-card p-5">
         <h3 className="font-semibold text-foreground">Story completion</h3>
         <div className="mt-4 grid gap-4">
+          {cls.stories.length === 0 && <p className="text-sm text-muted-foreground">No stories started yet.</p>}
           {cls.stories.map((story) => (
             <div key={story.id} className="rounded-xl bg-muted/40 p-4">
               <div className="flex items-center justify-between text-sm">
@@ -583,6 +515,7 @@ function ProgressTab({
       <div className="rounded-2xl border bg-card p-5">
         <h3 className="font-semibold text-foreground">Students needing support</h3>
         <div className="mt-4 grid gap-4">
+          {cls.studentsNeedingSupport.length === 0 && <p className="text-sm text-muted-foreground">No support data available.</p>}
           {cls.studentsNeedingSupport.map((st, i) => {
             const barColors = [
               "bg-purple-500",

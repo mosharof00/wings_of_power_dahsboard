@@ -130,11 +130,11 @@ export function AdminDashboardView({
           <div className="grid gap-4 sm:grid-cols-2">
             <PercentCard
               label="Story completion"
-              percent={data.storyCompletionPercent ?? 0}
+              percent={data.storyCompletionPercent ?? null}
             />
             <PercentCard
-              label="Quiz Completion"
-              percent={data.quizCompletionPercent ?? 0}
+              label="Quiz attempts completed"
+              percent={data.quizCompletionPercent ?? null}
             />
           </div>
         </section>
@@ -304,12 +304,12 @@ function StoryCount({ label, value }: { label: string; value: number }) {
   );
 }
 
-function PercentCard({ label, percent }: { label: string; percent: number }) {
-  const width = Math.max(0, Math.min(100, percent));
+function PercentCard({ label, percent }: { label: string; percent: number | null }) {
+  const width = Math.max(0, Math.min(100, percent ?? 0));
   return (
     <article className="rounded-xl border bg-card p-4">
       <h3 className="text-sm font-medium text-foreground">{label}</h3>
-      <p className="mt-3 text-2xl font-semibold">{percent}%</p>
+      <p className="mt-3 text-2xl font-semibold">{percent === null ? "—" : `${percent}%`}</p>
       <div className="mt-3 h-2 rounded-full bg-primary/15">
         <div
           className="h-2 rounded-full bg-primary"

@@ -21,8 +21,8 @@ export type AdminDashboard = {
   totalClasses: number;
   pendingStudents: number;
   week: WeekPoint[];
-  storyCompletionPercent: number;
-  quizCompletionPercent: number;
+  storyCompletionPercent: number | null;
+  quizCompletionPercent: number | null;
   stories: {
     published: number;
     drafts: number;

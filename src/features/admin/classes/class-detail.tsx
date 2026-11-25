@@ -157,12 +157,12 @@ export function ClassDetail({ id }: { id: string }) {
             <Metric label="Students" value={String(schoolClass.studentCount)} caption="Students in this class." />
             <Metric
               label="Avg. reading progress"
-              value={`${schoolClass.readingProgressPercent}%`}
+              value={schoolClass.readingProgressPercent === null ? "—" : `${schoolClass.readingProgressPercent}%`}
               caption="Average progress by students"
             />
             <Metric
               label="Avg. quiz score"
-              value={`${schoolClass.quizScorePercent}%`}
+              value={schoolClass.quizScorePercent === null ? "—" : `${schoolClass.quizScorePercent}%`}
               caption="Average score achieved by students."
             />
           </div>

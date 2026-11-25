@@ -55,7 +55,7 @@ describe("teacher classes model", () => {
     expect(row.progressPercent).toBeGreaterThan(0);
   });
 
-  it("normalizes class detail with default stories and students", () => {
+  it("keeps student rows and omits learning metrics when no data was returned", () => {
     const raw = {
       id: "cls-1",
       name: "Maple",
@@ -79,9 +79,9 @@ describe("teacher classes model", () => {
 
     const detail = normalizeClassDetail(raw);
     expect(detail.id).toBe("cls-1");
-    expect(detail.avgQuizScore).toBe(89);
-    expect(detail.readingProgressPercent).toBe(92);
-    expect(detail.stories.length).toBe(3);
+    expect(detail.avgQuizScore).toBeNull();
+    expect(detail.readingProgressPercent).toBeNull();
+    expect(detail.stories).toEqual([]);
     expect(detail.students.length).toBe(1);
     expect(detail.students[0]?.name).toBe("Jonah Levy");
     expect(detail.students[0]?.points).toBe(88);

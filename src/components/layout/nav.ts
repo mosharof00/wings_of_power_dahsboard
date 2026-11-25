@@ -117,6 +117,12 @@ export const teacherNav: NavItem[] = [
     icon: "badges",
   },
   {
+    label: "Chapter Quizzes",
+    title: "Chapter Quizzes",
+    href: "/teacher/chapters",
+    icon: "stories",
+  },
+  {
     label: "Stories & Questions",
     title: "Stories & Questions",
     href: "/teacher/game-packs",

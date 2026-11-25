@@ -77,8 +77,7 @@ function DetailsPanel({ student }: { student: StudentDetail }) {
       <article className="rounded-xl border bg-card p-4">
         <h3 className="font-medium">Growing at their own pace</h3>
         <p className="mt-2 text-sm text-muted-foreground">
-          Sample learning snapshot. Explore Progress for chapters, quiz scores, and comprehension
-          work.
+          Explore Progress for chapter completion and quiz scores.
         </p>
         <div className="mt-4 grid grid-cols-2 gap-3">
           <Stat value={student.chaptersCompleted} label="Chapters completed" />
@@ -101,23 +100,24 @@ function ProgressPanel({ student }: { student: StudentDetail }) {
           <thead>
             <tr className="text-left text-muted-foreground">
               <th className="px-4 py-2 font-medium">Story</th>
-              <th className="px-4 py-2 font-medium">chapters</th>
               <th className="px-4 py-2 font-medium">Chapter progress</th>
-              <th className="px-4 py-2 font-medium">Score per story</th>
               <th className="px-4 py-2 font-medium">Quiz status</th>
-              <th className="px-4 py-2 font-medium">Quiz Score</th>
+              <th className="px-4 py-2 font-medium">Quiz average</th>
             </tr>
           </thead>
           <tbody>
+            {student.progress.length === 0 && (
+              <tr>
+                <td colSpan={4} className="p-4 text-muted-foreground">No reading or quiz progress yet.</td>
+              </tr>
+            )}
             {student.progress.map((row, index) => (
               <tr key={`${row.story}-${index}`} className="border-t">
                 <td className="px-4 py-3">{row.story}</td>
-                <td className="px-4 py-3">{row.chapters}</td>
                 <td className="px-4 py-3">
                   {row.completed} / {row.total} completed
                   <Meter value={row.completed} total={row.total} />
                 </td>
-                <td className="px-4 py-3">{scoreLabel(row.score)}</td>
                 <td className="px-4 py-3">
                   <span
                     className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${quizStyles[row.quizStatus]}`}

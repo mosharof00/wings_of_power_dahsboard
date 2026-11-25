@@ -53,6 +53,7 @@ Teacher class and student rows in `docs/API.md` section 9.
 
 ## Notes
 
+- Student and class progress use live result data. Removed sample quiz scores and story progress, and render empty states before activity is recorded.
 - Documented teacher class and student endpoints in `docs/API.md` section 9 (`GET /api/teacher/classes`, `GET /api/teacher/classes/:id`, `GET /api/teacher/classes/:id/join-requests`, `POST /api/teacher/join-requests/:id/approve`, `POST /api/teacher/join-requests/:id/reject`, `GET /api/teacher/students`, `GET /api/teacher/students/:id`).
 - Implemented teacher class management in `src/features/teacher/classes/`:
   - `model.ts`: types, normalization, and helpers for class names, codes, pending banner messages, and progress formatting.

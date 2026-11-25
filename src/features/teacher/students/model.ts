@@ -61,7 +61,7 @@ export interface TeacherStudentDetail {
   points: number;
   badgeCount: number;
   chaptersCompleted: number;
-  quizAverage: number;
+  quizAverage: number | null;
   joinedDate: string;
   progress: StoryProgressItem[];
   badges: BadgeItem[];
@@ -120,7 +120,7 @@ export function normalizeStudentItem(raw: unknown, index = 0): TeacherStudentIte
   const progressPercent =
     typeof item.progressPercent === "number"
       ? item.progressPercent
-      : 68 + ((index * 4) % 25);
+      : 0;
 
   const reportsCount =
     typeof item.reportsCount === "number"
@@ -155,36 +155,6 @@ export function normalizeStudentItem(raw: unknown, index = 0): TeacherStudentIte
     avatarUrl,
   };
 }
-
-const DEFAULT_STORY_PROGRESS: StoryProgressItem[] = [
-  {
-    id: "sp-1",
-    story: "The Lantern Keeper of Marrow Bay",
-    chaptersCompleted: 4,
-    chaptersTotal: 4,
-    progressPercent: 100,
-    quizScore: "95%",
-    status: "COMPLETED",
-  },
-  {
-    id: "sp-2",
-    story: "Why the River Sings",
-    chaptersCompleted: 3,
-    chaptersTotal: 4,
-    progressPercent: 75,
-    quizScore: "88%",
-    status: "IN_PROGRESS",
-  },
-  {
-    id: "sp-3",
-    story: "The Seed Under the Staircase",
-    chaptersCompleted: 2,
-    chaptersTotal: 3,
-    progressPercent: 66,
-    quizScore: "90%",
-    status: "IN_PROGRESS",
-  },
-];
 
 const DEFAULT_BADGES: BadgeItem[] = [
   {
@@ -252,6 +222,7 @@ export function normalizeStudentDetail(raw: unknown): TeacherStudentDetail {
     classId: membershipObj.classId ?? userObj.classId,
     className: membershipObj.className ?? userObj.className,
     status: userObj.status ?? obj.status,
+    progressPercent: obj.progressPercent,
   });
 
   const progress: StoryProgressItem[] =
@@ -261,14 +232,14 @@ export function normalizeStudentDetail(raw: unknown): TeacherStudentDetail {
           return {
             id: String(item.id ?? `sp-${i}`),
             story: String(item.story ?? `Story ${i + 1}`),
-            chaptersCompleted: Number(item.chaptersCompleted ?? 3),
-            chaptersTotal: Number(item.chaptersTotal ?? 4),
-            progressPercent: Number(item.progressPercent ?? 75),
+            chaptersCompleted: Number(item.chaptersCompleted ?? 0),
+            chaptersTotal: Number(item.chaptersTotal ?? 0),
+            progressPercent: Number(item.progressPercent ?? 0),
             quizScore: item.quizScore ? String(item.quizScore) : null,
             status: (item.status as "COMPLETED" | "IN_PROGRESS" | "NOT_STARTED") ?? "IN_PROGRESS",
           };
         })
-      : DEFAULT_STORY_PROGRESS;
+      : [];
 
   const badges: BadgeItem[] =
     Array.isArray(obj.badges) && obj.badges.length > 0
@@ -303,8 +274,8 @@ export function normalizeStudentDetail(raw: unknown): TeacherStudentDetail {
     role: String(userObj.role ?? "STUDENT"),
     points: typeof obj.points === "number" ? obj.points : baseItem.points,
     badgeCount: badges.filter((b) => b.earned).length,
-    chaptersCompleted: 9,
-    quizAverage: 91,
+    chaptersCompleted: typeof obj.chaptersCompleted === "number" ? obj.chaptersCompleted : 0,
+    quizAverage: typeof obj.quizAverage === "number" ? obj.quizAverage : null,
     joinedDate: "Sep 2026",
     progress,
     badges,

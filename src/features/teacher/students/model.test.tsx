@@ -23,7 +23,7 @@ describe("teacher students model", () => {
     expect(item.className).toBe("Grade 4 · Amber");
     expect(item.status).toBe("ACTIVE");
     expect(item.points).toBeGreaterThan(0);
-    expect(item.progressPercent).toBeGreaterThan(0);
+    expect(item.progressPercent).toBe(0);
     expect(item.avatarUrl).toBe("https://example.com/avatar.png");
   });
 
@@ -61,6 +61,8 @@ describe("teacher students model", () => {
         className: "Grade 4 · Amber",
         status: "APPROVED",
       },
+      chaptersCompleted: 3,
+      quizAverage: 88,
       points: [
         {
           id: "pt-1",
@@ -98,9 +100,18 @@ describe("teacher students model", () => {
     expect(detail.className).toBe("Grade 4 · Amber");
     expect(detail.status).toBe("ACTIVE");
     expect(detail.badgeCount).toBe(1);
+    expect(detail.chaptersCompleted).toBe(3);
+    expect(detail.quizAverage).toBe(88);
     expect(detail.progress.length).toBe(1);
     expect(detail.progress[0]?.story).toBe("Why the River Sings");
     expect(detail.pointsHistory.length).toBe(1);
     expect(detail.pointsHistory[0]?.amount).toBe(10);
+  });
+
+  it("shows no sample progress for a student who has not started", () => {
+    const detail = normalizeStudentDetail({ progress: [], quizAverage: null });
+    expect(detail.progress).toEqual([]);
+    expect(detail.chaptersCompleted).toBe(0);
+    expect(detail.quizAverage).toBeNull();
   });
 });

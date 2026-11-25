@@ -55,6 +55,8 @@ No exported frame. Use the dashboard shell, the shared form, and the shared empt
 
 ## Notes
 
+- 25 Nov follow-up: added a dedicated Chapter Quizzes item to the teacher sidebar by owner request. Stories & Questions continues to open game packs.
+- Typecheck, 252 tests, changed-file lint, and Webpack production build passed. The existing Admin Themes lint failure remains, and the default Turbopack build could not bind its worker port in the review environment.
 - Updated `docs/API.md`: added `GET /api/teacher/stories` contract and extended `PUT /api/teacher/chapters/:chapterId/quiz` payload description.
 - Built Teacher chapter quiz picker at `/teacher/chapters` with story cards, chapter lists, search filter, and loading/error/empty states.
 - Built Quiz Editor at `/teacher/chapters/[chapterId]/quiz` allowing adding, editing, reordering, deleting questions, adding/removing options, selecting exactly one correct option, and optional hints.

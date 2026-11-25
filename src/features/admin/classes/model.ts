@@ -43,8 +43,8 @@ export type ClassStudent = {
 };
 
 export type ClassDetail = SchoolClass & {
-  readingProgressPercent: number;
-  quizScorePercent: number;
+  readingProgressPercent: number | null;
+  quizScorePercent: number | null;
   createdBy: string;
   teacher: { id: string; name: string; handle: string; staffCode: string };
   students: ClassStudent[];
@@ -223,8 +223,8 @@ export function normalizeClassDetail(raw: ApiClassRow): ClassDetail {
   const base = normalizeSchoolClass(raw);
   return {
     ...base,
-    readingProgressPercent: raw.readingProgressPercent ?? 0,
-    quizScorePercent: raw.quizScorePercent ?? 0,
+    readingProgressPercent: raw.readingProgressPercent ?? null,
+    quizScorePercent: raw.quizScorePercent ?? null,
     createdBy: raw.createdBy ?? "Admin",
     teacher: {
       id: raw.teacher?.id ?? "",

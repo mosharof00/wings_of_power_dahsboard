@@ -57,8 +57,8 @@ export interface TeacherClassDetail {
   code: string;
   studentCount: number;
   pendingCount: number;
-  avgQuizScore: number;
-  readingProgressPercent: number;
+  avgQuizScore: number | null;
+  readingProgressPercent: number | null;
   stories: StoryCompletionItem[];
   studentsNeedingSupport: StudentSupportItem[];
   students: ClassStudentRow[];
@@ -99,18 +99,6 @@ export function formatRequestDate(isoString?: string): string {
     return "Recently";
   }
 }
-
-const DEFAULT_STORIES: StoryCompletionItem[] = [
-  { id: "s-1", title: "The Lantern Keeper of Marrow Bay", progressPercent: 75 },
-  { id: "s-2", title: "Why the River Sings", progressPercent: 85 },
-  { id: "s-3", title: "The Seed Under the Staircase", progressPercent: 90 },
-];
-
-const DEFAULT_SUPPORT: StudentSupportItem[] = [
-  { id: "sup-1", name: "Jonah Levy", progressPercent: 52 },
-  { id: "sup-2", name: "Kai Tanaka", progressPercent: 40 },
-  { id: "sup-3", name: "Ruby Fitzgerald", progressPercent: 65 },
-];
 
 export function normalizeClassRow(raw: unknown, index = 0): TeacherClassRow {
   const item = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
@@ -176,12 +164,12 @@ export function normalizeClassDetail(raw: unknown): TeacherClassDetail {
   const avgQuizScore =
     typeof obj.avgQuizScore === "number"
       ? obj.avgQuizScore
-      : 89;
+      : null;
 
   const readingProgressPercent =
     typeof obj.readingProgressPercent === "number"
       ? obj.readingProgressPercent
-      : 92;
+      : null;
 
   const stories: StoryCompletionItem[] = Array.isArray(obj.stories) && obj.stories.length > 0
     ? obj.stories.map((s, i) => {
@@ -189,10 +177,10 @@ export function normalizeClassDetail(raw: unknown): TeacherClassDetail {
         return {
           id: String(item.id ?? `story-${i}`),
           title: String(item.title ?? `Story ${i + 1}`),
-          progressPercent: Number(item.progressPercent ?? 75),
+          progressPercent: Number(item.progressPercent ?? 0),
         };
       })
-    : DEFAULT_STORIES;
+    : [];
 
   const studentsNeedingSupport: StudentSupportItem[] =
     Array.isArray(obj.studentsNeedingSupport) && obj.studentsNeedingSupport.length > 0
@@ -201,10 +189,10 @@ export function normalizeClassDetail(raw: unknown): TeacherClassDetail {
           return {
             id: String(item.id ?? `sup-${i}`),
             name: String(item.name ?? "Student"),
-            progressPercent: Number(item.progressPercent ?? 50),
+            progressPercent: Number(item.progressPercent ?? 0),
           };
         })
-      : DEFAULT_SUPPORT;
+      : [];
 
   const students: ClassStudentRow[] = Array.isArray(obj.students)
     ? obj.students.map((st, i) => normalizeClassStudent(st, i))

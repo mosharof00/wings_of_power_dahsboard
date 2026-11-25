@@ -12,7 +12,6 @@ import { MetricCards } from "./metric-cards";
 import {
   attentionLine,
   greeting,
-  type ClassProgressData,
   type TeacherClass,
   type TeacherDashboard as TeacherDashboardData,
 } from "./model";
@@ -98,19 +97,7 @@ export function TeacherDashboardView({
     data.safeSpaceReports.reviewing +
     data.pendingStudents;
 
-  // Resolve class progress: either from data or inferred from teacher classes
-  const classProgress: ClassProgressData =
-    data.classProgress.segments.length > 0
-      ? data.classProgress
-      : classes.length > 0
-        ? {
-            total: classes.length,
-            segments: classes.map((cls, idx, arr) => ({
-              name: cls.name,
-              share: Math.round(100 / arr.length),
-            })),
-          }
-        : { total: 0, segments: [] };
+  const classProgress = data.classProgress;
 
   return (
     <div className="grid gap-6">
@@ -157,7 +144,7 @@ export function TeacherDashboardView({
             <div className="py-6">
               <EmptyState
                 title="No class progress"
-                description="Assigned classes will appear here."
+                description="Open a class to see its reading progress."
               />
             </div>
           ) : (

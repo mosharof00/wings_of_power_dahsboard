@@ -24,6 +24,9 @@ describe("dashboard nav", () => {
     );
     expect(stories?.disabled).toBeUndefined();
     expect(stories?.href).toBe("/teacher/game-packs");
+    expect(pageTitle("teacher", "/teacher/chapters/example/quiz")).toBe(
+      "Chapter Quizzes",
+    );
     expect(
       teacherNav.find((item) => item.label === "Profile")?.href,
     ).toBe("/teacher/profile");

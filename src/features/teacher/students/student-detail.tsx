@@ -146,7 +146,7 @@ export function TeacherStudentDetailView({ id }: { id: string }) {
             </span>
             <div>
               <p className="text-xs text-muted-foreground">Quiz average</p>
-              <p className="text-xl font-bold text-foreground">{student.quizAverage}%</p>
+              <p className="text-xl font-bold text-foreground">{student.quizAverage === null ? "—" : `${student.quizAverage}%`}</p>
             </div>
           </div>
         </div>
@@ -284,11 +284,16 @@ function ProgressPanel({ student }: { student: TeacherStudentDetail }) {
               <th className="py-3 pr-4 pl-5 font-medium">Story</th>
               <th className="px-4 py-3 font-medium">Chapters</th>
               <th className="px-4 py-3 font-medium">Progress</th>
-              <th className="px-4 py-3 font-medium">Quiz score</th>
+              <th className="px-4 py-3 font-medium">Quiz average</th>
               <th className="py-3 pr-5 pl-4 font-medium text-right">Status</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border/60">
+            {student.progress.length === 0 && (
+              <tr>
+                <td colSpan={5} className="p-5 text-muted-foreground">No reading or quiz progress yet.</td>
+              </tr>
+            )}
             {student.progress.map((item) => (
               <tr key={item.id} className="hover:bg-muted/20 transition-colors">
                 <td className="py-3.5 pr-4 pl-5 font-medium text-foreground">
